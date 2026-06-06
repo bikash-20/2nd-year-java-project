@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🚗 AutoRent — Car Rental Management System
+# 🚗 Rentify — Car Rental Management System
 
 ### A full-stack web application built with Java & Spring Boot
 
@@ -22,8 +22,7 @@
 ---
 
 ## Overview
-
-**AutoRent** is a fully functional Car Rental Management System developed as a 2nd-year Java project. It evolved from a basic console application into a production-ready full-stack web application, demonstrating real-world software development skills including layered architecture, database persistence, PDF generation, and data visualization.
+**Rentify** is a fully functional Car Rental Management System developed as a 2nd-year Java project. It evolved from a basic console application into a production-ready full-stack web application, demonstrating real-world software development skills including layered architecture, database persistence, PDF generation, and data visualization.
 
 > The project was first built as a **JavaFX desktop application**, then converted into a **Spring Boot web application** accessible from any device including mobile.
 
