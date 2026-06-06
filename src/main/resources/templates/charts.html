@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Revenue Charts', ~{::content})}">
+<body>
+<div th:fragment="content">
+
+    <div class="page-header">
+        <h1 class="page-title">Revenue Charts</h1>
+        <p class="page-sub"
+           th:text="'Total revenue: $' + ${#numbers.formatDecimal(totalRevenue,1,2)} + '  ·  Total rentals: ' + ${totalRentals}">
+        </p>
+    </div>
+
+    <div class="charts-grid">
+        <div class="card chart-card">
+            <h2 class="card-title">📊 Monthly Revenue</h2>
+            <p class="chart-sub">Current year rental revenue by month</p>
+            <canvas id="barChart" height="260"></canvas>
+        </div>
+        <div class="card chart-card">
+            <h2 class="card-title">🍩 Rentals by Category</h2>
+            <p class="chart-sub">Which car categories are rented most</p>
+            <canvas id="pieChart" height="260"></canvas>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script th:inline="javascript">
+    /*<![CDATA[*/
+        const monthlyData  = /*[[${monthlyRevenue}]]*/ [];
+        const categoryData = /*[[${categoryBreakdown}]]*/ [];
+
+        const COLORS = ['#3b82f6','#22c55e','#f59e0b','#a855f7','#f87171','#38bdf8','#fb923c','#34d399'];
+
+        // Bar chart
+        new Chart(document.getElementById('barChart'), {
+            type: 'bar',
+            data: {
+                labels: monthlyData.map(d => d.month),
+                datasets: [{
+                    label: 'Revenue ($)',
+                    data: monthlyData.map(d => d.revenue),
+                    backgroundColor: monthlyData.map(d => d.revenue > 0 ? '#3b82f6aa' : '#1e2d4566'),
+                    borderColor:     monthlyData.map(d => d.revenue > 0 ? '#3b82f6'   : '#1e2d45'),
+                    borderWidth: 2,
+                    borderRadius: 6,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { label: ctx => ' $' + ctx.parsed.y.toLocaleString('en-US', {minimumFractionDigits:2}) } }
+                },
+                scales: {
+                    x: { ticks: { color: '#7a8fb0' }, grid: { color: '#1e2d45' } },
+                    y: { ticks: { color: '#7a8fb0', callback: v => '$' + v.toLocaleString() }, grid: { color: '#1e2d45' }, beginAtZero: true }
+                }
+            }
+        });
+
+        // Pie chart
+        const pieLabels = categoryData.length > 0 ? categoryData.map(d => d.category) : ['No rentals yet'];
+        const pieValues = categoryData.length > 0 ? categoryData.map(d => d.count)    : [1];
+
+        new Chart(document.getElementById('pieChart'), {
+            type: 'doughnut',
+            data: {
+                labels: pieLabels,
+                datasets: [{
+                    data: pieValues,
+                    backgroundColor: COLORS.slice(0, pieLabels.length),
+                    borderColor: '#0c0f18',
+                    borderWidth: 3,
+                    hoverOffset: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: '#a0b0cc', padding: 16, font: { size: 13 } } },
+                    tooltip: { callbacks: { label: ctx => ' ' + ctx.label + ': ' + ctx.parsed + ' rental(s)' } }
+                }
+            }
+        });
+    /*]]>*/
+    </script>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Rent a Car', ~{::content})}">
+<body>
+<div th:fragment="content">
+
+    <div class="page-header">
+        <h1 class="page-title">Rent a Car</h1>
+        <p class="page-sub">Pick your dates and book instantly</p>
+    </div>
+
+    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+    <div class="form-layout">
+        <div class="card form-card">
+            <form action="/rent" method="post" id="rentForm">
+
+                <div class="field">
+                    <label>Select Car</label>
+                    <select name="carId" id="carId" required onchange="updatePrice()">
+                        <option value="">— Choose an available car —</option>
+                        <option th:each="car : ${availableCars}"
+                                th:value="${car.carId}"
+                                th:text="${car.carId} + ' — ' + ${car.brand} + ' ' + ${car.model} + ' ($' + ${car.basePricePerDay} + '/day)'"
+                                th:data-price="${car.basePricePerDay}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="field-row">
+                    <div class="field">
+                        <label>Start Date</label>
+                        <input type="date" id="startDate" name="startDate"
+                               th:min="${today}" required onchange="updatePrice()"/>
+                    </div>
+                    <div class="field">
+                        <label>End Date</label>
+                        <input type="date" id="endDate" name="endDate"
+                               th:min="${today}" required onchange="updatePrice()"/>
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <div class="field">
+                        <label>Your Full Name</label>
+                        <input type="text" name="name" placeholder="e.g. Bikash Talukder" required/>
+                    </div>
+                    <div class="field">
+                        <label>Phone Number</label>
+                        <input type="tel" name="phone" placeholder="+91 98765 43210" required/>
+                    </div>
+                </div>
+
+                <!-- Live Price Preview -->
+                <div class="price-preview" id="pricePreview" style="display:none">
+                    <div class="preview-detail">
+                        <span class="preview-label">Duration</span>
+                        <span class="preview-days" id="previewDays">0 days</span>
+                    </div>
+                    <div class="preview-detail">
+                        <span class="preview-label">Total</span>
+                        <span class="preview-price" id="previewAmount">$0</span>
+                    </div>
+                </div>
+
+                <div class="btn-row">
+                    <button type="submit" class="btn btn-primary btn-full">✓ Confirm Booking</button>
+                    <a href="/" class="btn btn-secondary btn-full">Cancel</a>
+                </div>
+
+            </form>
+        </div>
+
+        <!-- Available Cars Sidebar -->
+        <div class="card side-card">
+            <h3 class="card-title">Available Cars</h3>
+            <div class="car-list">
+                <div th:each="car : ${availableCars}" class="car-item"
+                     th:onclick="'selectCar(\'' + ${car.carId} + '\', ' + ${car.basePricePerDay} + ')'">
+                    <div class="car-item-main">
+                        <span class="car-item-name" th:text="${car.brand} + ' ' + ${car.model}">Toyota Camry</span>
+                        <span class="badge cat" th:text="${car.category}">Sedan</span>
+                    </div>
+                    <div class="car-item-price" th:text="'$' + ${car.basePricePerDay} + '/day'">$60/day</div>
+                </div>
+                <p th:if="${#lists.isEmpty(availableCars)}" class="empty-msg">No cars available right now.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
