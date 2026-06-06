@@ -10,14 +10,18 @@
 [![Maven](https://img.shields.io/badge/Maven-3.9-red?style=for-the-badge&logo=apachemaven)](https://maven.apache.org)
 [![License](https://img.shields.io/badge/License-MIT-purple?style=for-the-badge)](LICENSE)
 
-**[🌐 Live Demo](https://web-production-da248.up.railway.app) · [📁 Source Code](https://github.com/bikash-20/rental-car-java-project) · <img width="1280" height="731" alt="image" src="https://github.com/user-attachments/assets/ac9fc050-15a7-4797-adca-5f277363d4f2" />
+**[🌐 Live Demo](https://web-production-da248.up.railway.app) · [📁 Source Code](https://web-production-dce2c.up.railway.app/) <img width="1280" height="731" alt="image" src="https://github.com/user-attachments/assets/a90f9431-fd24-40d7-8659-6c5219ae7db6" /> <img width="1280" height="731" alt="image" src="https://github.com/user-attachments/assets/838b5698-92b0-4335-83b7-394d92311b20" /> <img width="526" height="641" alt="image" src="https://github.com/user-attachments/assets/9968fdcb-59c0-420e-9eb3-a7a2ca71dbdc" /> <img width="1280" height="715" alt="image" src="https://github.com/user-attachments/assets/f99755c0-1434-4860-8f24-b965d8c5a832" />
+
+
+
+
 
 
 </div>
 
 ---
 
-## 📌 Overview
+## Overview
 
 **AutoRent** is a fully functional Car Rental Management System developed as a 2nd-year Java project. It evolved from a basic console application into a production-ready full-stack web application, demonstrating real-world software development skills including layered architecture, database persistence, PDF generation, and data visualization.
 
@@ -25,7 +29,7 @@
 
 ---
 
-## ✨ Features
+## Features
 
 | Feature | Description |
 |---|---|
@@ -41,7 +45,7 @@
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Backend
 - **Java 17** — Core programming language
@@ -63,7 +67,7 @@
 
 ---
 
-## 🏗️ Project Architecture
+## Project Architecture
 
 ```
 AutoRentWeb/
@@ -107,7 +111,7 @@ Controller (HTTP) → Service (Business Logic) → Repository (Database)
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 | Tool | Version | Download |
@@ -135,7 +139,7 @@ java -jar target/AutoRentWeb-1.0.jar
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
 ### Dashboard
 > Live fleet overview with stat cards showing total cars, availability, and revenue
@@ -151,7 +155,7 @@ java -jar target/AutoRentWeb-1.0.jar
 
 ---
 
-## 📈 Project Evolution
+## Project Evolution
 
 This project was built in stages to demonstrate progressive learning:
 
@@ -167,7 +171,7 @@ Stage 4 — Database + Features  JPA persistence, PDF, Charts, Date booking
 
 ---
 
-## 🔮 Future Enhancements
+## Future Enhancements
 
 - [ ] User authentication (Admin + Customer login)
 - [ ] Email confirmation on booking
@@ -178,7 +182,7 @@ Stage 4 — Database + Features  JPA persistence, PDF, Charts, Date booking
 
 ---
 
-## 👨‍💻 Author
+## Author
 
 <div align="center">
 
@@ -195,7 +199,6 @@ Stage 4 — Database + Features  JPA persistence, PDF, Charts, Date booking
 <div align="center">
 
 **⭐ If you found this project useful, please give it a star on GitHub!**
-
-*Built with ❤️ using Java + Spring Boot*
+Built for the demonstration of Java skills. I used Java and Spring Boot.
 
 </div>
