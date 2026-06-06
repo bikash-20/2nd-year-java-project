@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('History', ~{::content})}">
+<body>
+<div th:fragment="content">
+
+    <div class="page-header">
+        <h1 class="page-title">Rental History</h1>
+        <p class="page-sub"
+           th:text="'Total: ' + ${totalCount} + ' transactions  ·  Revenue: $' + ${#numbers.formatDecimal(totalRevenue,1,2)}">
+        </p>
+    </div>
+
+    <!-- Active Rentals -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Active Rentals
+                <span class="badge rented" th:text="${#lists.size(activeRentals)}">0</span>
+            </h2>
+            <a href="/charts" class="btn btn-secondary btn-sm">📊 View Charts</a>
+        </div>
+        <div class="table-wrap">
+            <table class="table" th:if="${!#lists.isEmpty(activeRentals)}">
+                <thead>
+                    <tr><th>Car</th><th>Customer</th><th>Start</th><th>End</th><th>Days</th><th>Total</th><th>Receipt</th></tr>
+                </thead>
+                <tbody>
+                    <tr th:each="r : ${activeRentals}">
+                        <td th:text="${r.car.brand} + ' ' + ${r.car.model}">Toyota Camry</td>
+                        <td th:text="${r.customer.name}">John</td>
+                        <td th:text="${r.startDateStr}">01 Jan</td>
+                        <td th:text="${r.endDateStr}">04 Jan</td>
+                        <td th:text="${r.days}">3</td>
+                        <td th:text="'$' + ${#numbers.formatDecimal(r.totalPrice,1,2)}">$180</td>
+                        <td>
+                            <a th:href="@{/receipt/{id}(id=${r.id})}"
+                               class="btn btn-xs btn-primary">⬇ PDF</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p th:if="${#lists.isEmpty(activeRentals)}" class="empty-msg">No active rentals.</p>
+        </div>
+    </div>
+
+    <!-- Returned -->
+    <div class="card" style="margin-top:24px">
+        <h2 class="card-title">Returned
+            <span class="badge available" th:text="${#lists.size(returnedRentals)}">0</span>
+        </h2>
+        <div class="table-wrap" style="margin-top:14px">
+            <table class="table" th:if="${!#lists.isEmpty(returnedRentals)}">
+                <thead>
+                    <tr><th>Car</th><th>Customer</th><th>Start</th><th>End</th><th>Days</th><th>Total</th><th>Receipt</th></tr>
+                </thead>
+                <tbody>
+                    <tr th:each="r : ${returnedRentals}">
+                        <td th:text="${r.car.brand} + ' ' + ${r.car.model}">Toyota Camry</td>
+                        <td th:text="${r.customer.name}">John</td>
+                        <td th:text="${r.startDateStr}">01 Jan</td>
+                        <td th:text="${r.endDateStr}">04 Jan</td>
+                        <td th:text="${r.days}">3</td>
+                        <td th:text="'$' + ${#numbers.formatDecimal(r.totalPrice,1,2)}">$180</td>
+                        <td>
+                            <a th:href="@{/receipt/{id}(id=${r.id})}"
+                               class="btn btn-xs btn-secondary">⬇ PDF</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p th:if="${#lists.isEmpty(returnedRentals)}" class="empty-msg">No returned rentals yet.</p>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

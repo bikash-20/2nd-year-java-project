@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Car Returned', ~{::content})}">
+<body>
+<div th:fragment="content">
+
+    <div class="success-page">
+        <div class="success-icon">✅</div>
+        <h1 class="success-title">Car Returned!</h1>
+        <p class="success-sub">The car has been successfully returned.</p>
+
+        <div class="receipt card" th:if="${rental}">
+            <h3 class="receipt-title">Return Summary</h3>
+            <div class="receipt-row">
+                <span>Customer</span>
+                <span th:text="${rental.customer.name}">John Doe</span>
+            </div>
+            <div class="receipt-row">
+                <span>Car</span>
+                <span th:text="${rental.car.brand} + ' ' + ${rental.car.model}">Toyota Camry</span>
+            </div>
+            <div class="receipt-row">
+                <span>Rental Days</span>
+                <span th:text="${rental.days}">3</span>
+            </div>
+            <div class="receipt-row total-row">
+                <span>Total Paid</span>
+                <span th:text="'$' + ${#numbers.formatDecimal(rental.totalPrice,1,2)}">$180.00</span>
+            </div>
+            <div class="receipt-row">
+                <span>Returned At</span>
+                <span th:text="${rental.returnedAtStr}">01 Jan 2025</span>
+            </div>
+        </div>
+
+        <div class="btn-row center">
+            <a href="/" class="btn btn-primary">← Dashboard</a>
+            <a href="/return" class="btn btn-secondary">Return Another</a>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

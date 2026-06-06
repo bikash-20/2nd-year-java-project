@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Dashboard', ~{::content})}">
+<body>
+<div th:fragment="content">
+
+    <div class="page-header">
+        <h1 class="page-title">Dashboard</h1>
+        <p class="page-sub">Fleet overview · Data saved permanently in database</p>
+    </div>
+
+    <!-- Stat Cards -->
+    <div class="stat-grid">
+        <div class="stat-card blue">
+            <div class="stat-label">Total Cars</div>
+            <div class="stat-value" th:text="${totalCars}">6</div>
+        </div>
+        <div class="stat-card green">
+            <div class="stat-label">Available</div>
+            <div class="stat-value" th:text="${available}">6</div>
+        </div>
+        <div class="stat-card amber">
+            <div class="stat-label">Rented Out</div>
+            <div class="stat-value" th:text="${rented}">0</div>
+        </div>
+        <div class="stat-card purple">
+            <div class="stat-label">Revenue</div>
+            <div class="stat-value" th:text="'$' + ${#numbers.formatDecimal(revenue, 1, 0)}">$0</div>
+        </div>
+    </div>
+
+    <!-- Fleet Table -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Fleet Overview</h2>
+            <div style="display:flex;gap:8px">
+                <a href="/cars"   class="btn btn-secondary btn-sm">⚙ Manage</a>
+                <a href="/rent"   class="btn btn-primary   btn-sm">+ Rent</a>
+            </div>
+        </div>
+        <div class="table-wrap">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th><th>Brand</th><th>Model</th>
+                        <th>Category</th><th>$/Day</th><th>Status</th><th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="car : ${cars}">
+                        <td class="mono" th:text="${car.carId}">C001</td>
+                        <td th:text="${car.brand}">Toyota</td>
+                        <td th:text="${car.model}">Camry</td>
+                        <td><span class="badge cat" th:text="${car.category}">Sedan</span></td>
+                        <td th:text="'$' + ${car.basePricePerDay}">$60</td>
+                        <td>
+                            <span th:if="${car.available}"   class="badge available">✓ Available</span>
+                            <span th:unless="${car.available}" class="badge rented">● Rented</span>
+                        </td>
+                        <td>
+                            <a th:if="${car.available}"
+                               th:href="@{/rent(carId=${car.carId})}"
+                               class="btn btn-xs btn-primary">Rent</a>
+                            <a th:unless="${car.available}"
+                               th:href="@{/return}"
+                               class="btn btn-xs btn-secondary">Return</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

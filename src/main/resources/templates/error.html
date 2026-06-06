@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Error', ~{::content})}">
+<body>
+<div th:fragment="content">
+    <div class="success-page">
+        <div class="success-icon">⚠️</div>
+        <h1 class="success-title" style="color:#f87171">Something went wrong</h1>
+        <p class="success-sub" th:text="'Error ' + ${status}">Error 500</p>
+
+        <div class="card" style="max-width:520px;margin:0 auto 24px;text-align:left">
+            <p style="color:#f87171;font-family:monospace;font-size:13px;word-break:break-word"
+               th:text="${message}">Internal Server Error</p>
+        </div>
+
+        <div class="btn-row center">
+            <a href="/" class="btn btn-primary">← Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
