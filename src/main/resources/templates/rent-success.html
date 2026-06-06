@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Booking Confirmed', ~{::content})}">
+<body>
+<div th:fragment="content">
+    <div class="success-page">
+        <div class="success-icon">🎉</div>
+        <h1 class="success-title">Booking Confirmed!</h1>
+        <p class="success-sub">Your car has been successfully booked.</p>
+
+        <div class="receipt card" th:if="${rental}">
+            <h3 class="receipt-title">Booking Receipt</h3>
+            <div class="receipt-row">
+                <span>Customer ID</span>
+                <span class="mono" th:text="${rental.customer.customerId}">CUS001</span>
+            </div>
+            <div class="receipt-row">
+                <span>Name</span>
+                <span th:text="${rental.customer.name}">Bikash</span>
+            </div>
+            <div class="receipt-row">
+                <span>Phone</span>
+                <span th:text="${rental.customer.phone}">+91 99999</span>
+            </div>
+            <div class="receipt-row">
+                <span>Car</span>
+                <span th:text="${rental.car.brand} + ' ' + ${rental.car.model}">Toyota Camry</span>
+            </div>
+            <div class="receipt-row">
+                <span>Start Date</span>
+                <span th:text="${rental.startDateStr}">01 Jan 2025</span>
+            </div>
+            <div class="receipt-row">
+                <span>End Date</span>
+                <span th:text="${rental.endDateStr}">04 Jan 2025</span>
+            </div>
+            <div class="receipt-row">
+                <span>Days</span>
+                <span th:text="${rental.days}">3</span>
+            </div>
+            <div class="receipt-row total-row">
+                <span>Total Amount</span>
+                <span th:text="'$' + ${#numbers.formatDecimal(rental.totalPrice, 1, 2)}">$180.00</span>
+            </div>
+        </div>
+
+        <div class="btn-row center">
+            <a href="/" class="btn btn-secondary">← Dashboard</a>
+            <a th:if="${rental != null and rental.id != null}"
+               th:href="@{/receipt/{id}(id=${rental.id})}"
+               class="btn btn-primary">⬇ Download PDF</a>
+            <a href="/rent" class="btn btn-secondary">Rent Another</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
