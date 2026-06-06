@@ -46,7 +46,7 @@ public class PdfService {
         Font footerFont = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL, MUTED);
 
         // Logo in header
-        Paragraph logo = new Paragraph("🚗  AutoRent", logoFont);
+        Paragraph logo = new Paragraph("🚗  Rentify", logoFont);
         logo.setAlignment(Element.ALIGN_CENTER);
         logo.setSpacingBefore(16);
         doc.add(logo);
@@ -124,7 +124,7 @@ public class PdfService {
         LineSeparator line = new LineSeparator(0.5f, 80f, BORDER, Element.ALIGN_CENTER, -5);
         doc.add(new Chunk(line));
 
-        Paragraph footer = new Paragraph("Built by Bikash Talukder  ·  AutoRent v2.0  ·  Thank you for choosing us!", footerFont);
+        Paragraph footer = new Paragraph("Built by Bikash Talukder  ·  Rentify v2.0  ·  Thank you for choosing us!", footerFont);
         footer.setAlignment(Element.ALIGN_CENTER);
         footer.setSpacingBefore(14);
         doc.add(footer);
