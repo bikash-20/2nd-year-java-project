@@ -10,7 +10,8 @@
 [![Maven](https://img.shields.io/badge/Maven-3.9-red?style=for-the-badge&logo=apachemaven)](https://maven.apache.org)
 [![License](https://img.shields.io/badge/License-MIT-purple?style=for-the-badge)](LICENSE)
 
-**[🌐 Live Demo](https://web-production-da248.up.railway.app) · [📁 Source Code](https://github.com/bikash-20/rental-car-java-project) · [📸 Screenshots](#screenshots)**
+**[🌐 Live Demo](https://web-production-da248.up.railway.app) · [📁 Source Code](https://github.com/bikash-20/rental-car-java-project) · <img width="1280" height="731" alt="image" src="https://github.com/user-attachments/assets/ac9fc050-15a7-4797-adca-5f277363d4f2" />
+
 
 </div>
 
