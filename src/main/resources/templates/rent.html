@@ -21,7 +21,7 @@
                             <option value="">— Choose an available car —</option>
                             <option th:each="car : ${availableCars}" th:value="${car.carId}"
                                 th:text="${car.carId} + ' — ' + ${car.brand} + ' ' + ${car.model} + ' ($' + ${car.basePricePerDay} + '/day)'"
-                                th:data-price="${car.basePricePerDay}">
+                                th:attr="data-price=${car.basePricePerDay}">
                             </option>
                         </select>
                     </div>
@@ -67,18 +67,22 @@
                 </form>
             </div>
 
+            <!-- Available Cars Sidebar - no th:onclick, uses data attributes -->
             <div class="card side-card">
                 <h3 class="card-title">Available Cars</h3>
                 <div class="car-list">
                     <div th:each="car : ${availableCars}" class="car-item"
-                        th:onclick="'selectCar(\'' + ${car.carId} + '\', ' + ${car.basePricePerDay} + ')'">
+                        th:attr="data-carid=${car.carId}, data-price=${car.basePricePerDay}"
+                        onclick="selectCarFromData(this)">
                         <div class="car-item-main">
                             <span class="car-item-name" th:text="${car.brand} + ' ' + ${car.model}">Toyota Camry</span>
                             <span class="badge cat" th:text="${car.category}">Sedan</span>
                         </div>
                         <div class="car-item-price" th:text="'$' + ${car.basePricePerDay} + '/day'">$60/day</div>
                     </div>
-                    <p th:if="${#lists.isEmpty(availableCars)}" class="empty-msg">No cars available right now.</p>
+                    <p th:if="${#lists.isEmpty(availableCars)}" class="empty-msg">
+                        No cars available right now.
+                    </p>
                 </div>
             </div>
         </div>
