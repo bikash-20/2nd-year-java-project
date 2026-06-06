@@ -10,7 +10,7 @@
 [![Maven](https://img.shields.io/badge/Maven-3.9-red?style=for-the-badge&logo=apachemaven)](https://maven.apache.org)
 [![License](https://img.shields.io/badge/License-MIT-purple?style=for-the-badge)](LICENSE)
 
-**[🌐 Live Demo](https://web-production-da248.up.railway.app) · [📁 Source Code](https://web-production-dce2c.up.railway.app/) <img width="1280" height="731" alt="image" src="https://github.com/user-attachments/assets/a90f9431-fd24-40d7-8659-6c5219ae7db6" /> <img width="1280" height="731" alt="image" src="https://github.com/user-attachments/assets/838b5698-92b0-4335-83b7-394d92311b20" /> <img width="526" height="641" alt="image" src="https://github.com/user-attachments/assets/9968fdcb-59c0-420e-9eb3-a7a2ca71dbdc" /> <img width="1280" height="715" alt="image" src="https://github.com/user-attachments/assets/f99755c0-1434-4860-8f24-b965d8c5a832" />
+**[🌐 Live Demo](https://web-production-da248.up.railway.app) · [📁 Source Code](https://github.com/bikash-20/2nd-year-java-project) <img width="1280" height="731" alt="image" src="https://github.com/user-attachments/assets/a90f9431-fd24-40d7-8659-6c5219ae7db6" /> <img width="1280" height="731" alt="image" src="https://github.com/user-attachments/assets/838b5698-92b0-4335-83b7-394d92311b20" /> <img width="526" height="641" alt="image" src="https://github.com/user-attachments/assets/9968fdcb-59c0-420e-9eb3-a7a2ca71dbdc" /> <img width="1280" height="715" alt="image" src="https://github.com/user-attachments/assets/f99755c0-1434-4860-8f24-b965d8c5a832" />
 
 
 
@@ -199,6 +199,6 @@ Stage 4 — Database + Features  JPA persistence, PDF, Charts, Date booking
 <div align="center">
 
 **⭐ If you found this project useful, please give it a star on GitHub!**
-Built for the demonstration of Java skills. I used Java and Spring Boot.
+Built for the demonstration of Java skills. I used Java and Spring Boot. here you go, see how I handled complicated codebase and debugged. https://github.com/bikash-20/rental-car-java-project
 
 </div>
