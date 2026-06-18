@@ -27,10 +27,12 @@ function sendMessage() {
     input.value = '';
     body.scrollTop = body.scrollHeight;
 
+    // Append user message to history
+    chatHistory.push({ role: "user", content: msg });
+
     // Prepare payload for OpenRouter via backend
     const payload = {
-        model: "meta-llama/llama-3.1-8b-instruct:free",
-        messages: [{ role: "user", content: msg }]
+        messages: chatHistory
     };
 
     fetch('/api/chat', {
@@ -44,6 +46,10 @@ function sendMessage() {
             throw new Error(data.error || 'Server returned status ' + status);
         }
         const reply = data.choices?.[0]?.message?.content || 'No response.';
+        
+        // Append AI response to history
+        chatHistory.push({ role: "assistant", content: reply });
+
         const aiDiv = document.createElement('div');
         aiDiv.style.marginBottom = '8px';
         aiDiv.style.color = '#333';
@@ -115,6 +121,14 @@ function selectCar(carId, price) {
 }
 
 // ── Set default startDate to today ────────────────────────────────────────────
+// Global chat history to maintain context and inject AI personality
+let chatHistory = [
+    {
+        role: "system",
+        content: "You are the official AI assistant for Rentify, a car rental web application built by BIKASH TALUKDER during his 2nd year of CSE. Your primary purpose is to help customers and administrators with the app's features, including car prices, billing, available cars, and revenue tracking. \n\nIMPORTANT RULES:\n1. When the user sends a greeting (e.g., 'hi', 'hello', 'hlw'), you MUST greet them back, introduce yourself as the Rentify assistant built by Bikash, briefly list what you can help with (prices, billing, availability, revenue), and ask them what they would like to know.\n2. You do not currently have live access to the database, so if they ask for real-time stats, explain how the app handles it generally or ask them to check the dashboard.\n3. If they ask out-of-context questions (general knowledge), answer them politely, but mention you are primarily the Rentify assistant."
+    }
+];
+
 document.addEventListener('DOMContentLoaded', () => {
     const startInput = document.getElementById('startDate');
     if (startInput && !startInput.value) {
