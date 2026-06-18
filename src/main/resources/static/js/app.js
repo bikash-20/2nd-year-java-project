@@ -38,8 +38,11 @@ function sendMessage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
     })
-    .then(res => res.json())
-    .then(data => {
+    .then(res => res.json().then(data => ({ status: res.status, ok: res.ok, data })))
+    .then(({ status, ok, data }) => {
+        if (!ok || data.error) {
+            throw new Error(data.error || 'Server returned status ' + status);
+        }
         const reply = data.choices?.[0]?.message?.content || 'No response.';
         const aiDiv = document.createElement('div');
         aiDiv.style.marginBottom = '8px';
