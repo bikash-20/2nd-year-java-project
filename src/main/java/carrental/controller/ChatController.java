@@ -28,28 +28,61 @@ public class ChatController {
                 headers.setBearerAuth(openRouterKey.trim());
             }
 
-            // Forward the incoming payload to OpenRouter with robust error handling
-            HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, headers);
-            RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<String> response = restTemplate.exchange(
-                    OPENROUTER_URL,
-                    HttpMethod.POST,
-                    request,
-                    String.class
-            );
-            // If the response body looks like HTML (starts with '<'), treat as error
-            String body = response.getBody();
-            if (body != null && body.trim().startsWith("<!DOCTYPE")) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body(Map.of("error", "OpenRouter returned non-JSON response. Possible authentication issue."));
+            // List of reliable free models to try in order
+        String[] fallbackModels = {
+            "huggingfaceh4/zephyr-7b-beta:free",
+            "google/gemma-2-9b-it:free",
+            "meta-llama/llama-3-8b-instruct:free",
+            "mistralai/mistral-7b-instruct:free"
+        };
+
+        RestTemplate restTemplate = new RestTemplate();
+        Exception lastException = null;
+
+        for (String model : fallbackModels) {
+            try {
+                // Override the model in the payload
+                payload.put("model", model);
+                HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, headers);
+
+                ResponseEntity<String> response = restTemplate.exchange(
+                        OPENROUTER_URL,
+                        HttpMethod.POST,
+                        request,
+                        String.class
+                );
+
+                String body = response.getBody();
+                if (body != null && body.trim().startsWith("<!DOCTYPE")) {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body(Map.of("error", "OpenRouter returned HTML. Possible authentication issue."));
+                }
+
+                ObjectMapper mapper = new ObjectMapper();
+                Map<String, Object> jsonResponse = mapper.readValue(body, Map.class);
+                return ResponseEntity.status(response.getStatusCode()).body(jsonResponse);
+
+            } catch (org.springframework.web.client.HttpStatusCodeException e) {
+                lastException = e;
+                // If the key is outright invalid (401), stop immediately
+                if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                    break;
+                }
+                // Otherwise (402 Payment Required, 404 Not Found), continue to the next model
+            } catch (Exception e) {
+                lastException = e;
+                // Other exceptions (network errors, etc), try the next model
             }
-            // Parse OpenRouter's JSON string into a Map to prevent double serialization
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, Object> jsonResponse = mapper.readValue(body, Map.class);
-            return ResponseEntity.status(response.getStatusCode()).body(jsonResponse);
+        }
+
+        // If all models fail, return the last exception encountered
+        String errorMsg = lastException != null ? lastException.getMessage() : "Unknown error";
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("error", "All fallback models failed. Last error: " + errorMsg));
+        
         } catch (Exception e) {
-            // Safely serialize the error as JSON using Spring's built-in Jackson
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Failed to process chat request: " + e.getMessage()));
         }
-    }}
+    }
+}
