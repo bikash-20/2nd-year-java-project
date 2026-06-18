@@ -12,7 +12,7 @@ import java.util.Map;
 @RequestMapping("/api")
 public class ChatController {
 
-    @Value("${OPENROUTER_API_KEY}")
+    @Value("${OPENROUTER_API_KEY:}")
     private String openRouterKey;
 
     private static final String OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
