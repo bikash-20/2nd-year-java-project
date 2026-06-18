@@ -3,6 +3,59 @@ function toggleNav() {
     document.getElementById('navLinks').classList.toggle('open');
 }
 
+// ── Chatbot toggle and messaging ────────────────────────────────────────
+function toggleChatbot() {
+    const modal = document.getElementById('chatbot-modal');
+    if (!modal) return;
+    const isVisible = modal.style.display && modal.style.display !== 'none';
+    modal.style.display = isVisible ? 'none' : 'block';
+}
+
+function sendMessage() {
+    const input = document.getElementById('chatbot-input');
+    const body = document.getElementById('chatbot-body');
+    if (!input || !body) return;
+    const msg = input.value.trim();
+    if (!msg) return;
+
+    // Append user message
+    const userDiv = document.createElement('div');
+    userDiv.style.marginBottom = '8px';
+    userDiv.textContent = 'You: ' + msg;
+    body.appendChild(userDiv);
+    input.value = '';
+    body.scrollTop = body.scrollHeight;
+
+    // Prepare payload for OpenRouter via backend
+    const payload = {
+        model: "openrouter/auto",
+        messages: [{ role: "user", content: msg }]
+    };
+
+    fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+        const reply = data.choices?.[0]?.message?.content || 'No response.';
+        const aiDiv = document.createElement('div');
+        aiDiv.style.marginBottom = '8px';
+        aiDiv.textContent = 'AI: ' + reply;
+        body.appendChild(aiDiv);
+        body.scrollTop = body.scrollHeight;
+    })
+    .catch(err => {
+        const errDiv = document.createElement('div');
+        errDiv.style.marginBottom = '8px';
+        errDiv.style.color = 'var(--red)';
+        errDiv.textContent = 'AI: (error) ' + err.message;
+        body.appendChild(errDiv);
+        body.scrollTop = body.scrollHeight;
+    });
+}
+
 // ── Date-based price preview ─────────────────────────────────────────────────
 function updatePrice() {
     const select = document.getElementById('carId');

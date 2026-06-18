@@ -84,7 +84,11 @@ body {
   padding: 8px 18px;
 }
 .nav-cta:hover { background: var(--blue2); }
-
+/* Active state for navigation links */
+.nav-link.active {
+    background: var(--blue);
+    color: #fff !important;
+}
 /* ── Main ────────────────────────────────── */
 .main-content {
   max-width: 1100px;

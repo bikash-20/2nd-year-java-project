@@ -18,11 +18,11 @@ import java.time.LocalDate;
 public class RentalController {
 
     private final CarRentalSystem system;
-    private final PdfService      pdfService;
+    private final PdfService pdfService;
     private final RentalRepository rentalRepo;
 
     public RentalController(CarRentalSystem system, PdfService pdfService, RentalRepository rentalRepo) {
-        this.system     = system;
+        this.system = system;
         this.pdfService = pdfService;
         this.rentalRepo = rentalRepo;
     }
@@ -30,21 +30,21 @@ public class RentalController {
     // ── Dashboard ─────────────────────────────────────────────────────────────
     @GetMapping("/")
     public String dashboard(Model model) {
-        model.addAttribute("cars",      system.getAllCars());
+        model.addAttribute("cars", system.getAllCars());
         model.addAttribute("totalCars", system.totalCars());
         model.addAttribute("available", system.availableCars());
-        model.addAttribute("rented",    system.rentedCars());
-        model.addAttribute("revenue",   system.totalRevenue());
+        model.addAttribute("rented", system.rentedCars());
+        model.addAttribute("revenue", system.totalRevenue());
         return "dashboard";
     }
 
     // ── Charts ────────────────────────────────────────────────────────────────
     @GetMapping("/charts")
     public String charts(Model model) {
-        model.addAttribute("monthlyRevenue",    system.getMonthlyRevenue());
+        model.addAttribute("monthlyRevenue", system.getMonthlyRevenue());
         model.addAttribute("categoryBreakdown", system.getCategoryBreakdown());
-        model.addAttribute("totalRevenue",      system.totalRevenue());
-        model.addAttribute("totalRentals",      system.getAllRentals().size());
+        model.addAttribute("totalRevenue", system.totalRevenue());
+        model.addAttribute("totalRentals", system.getAllRentals().size());
         return "charts";
     }
 
@@ -57,11 +57,11 @@ public class RentalController {
 
     @PostMapping("/cars/add")
     public String addCar(@RequestParam String carId,
-                         @RequestParam String brand,
-                         @RequestParam String model,
-                         @RequestParam double price,
-                         @RequestParam String category,
-                         RedirectAttributes ra) {
+            @RequestParam String brand,
+            @RequestParam String model,
+            @RequestParam double price,
+            @RequestParam String category,
+            RedirectAttributes ra) {
         try {
             system.addCar(carId.toUpperCase().trim(), brand.trim(), model.trim(), price, category);
             ra.addFlashAttribute("success", "Car " + carId.toUpperCase() + " added successfully!");
@@ -92,16 +92,16 @@ public class RentalController {
 
     @PostMapping("/rent")
     public String doRent(@RequestParam String carId,
-                         @RequestParam String name,
-                         @RequestParam String phone,
-                         @RequestParam String startDate,
-                         @RequestParam String endDate,
-                         RedirectAttributes ra) {
+            @RequestParam String name,
+            @RequestParam String phone,
+            @RequestParam String startDate,
+            @RequestParam String endDate,
+            RedirectAttributes ra) {
         try {
             LocalDate start = LocalDate.parse(startDate);
-            LocalDate end   = LocalDate.parse(endDate);
-            Rental rental   = system.rentCar(carId, name, phone, start, end);
-            ra.addFlashAttribute("rental",  rental);
+            LocalDate end = LocalDate.parse(endDate);
+            Rental rental = system.rentCar(carId, name, phone, start, end);
+            ra.addFlashAttribute("rental", rental);
             ra.addFlashAttribute("success", true);
         } catch (Exception e) {
             ra.addFlashAttribute("error", e.getMessage());
@@ -111,7 +111,8 @@ public class RentalController {
 
     @GetMapping("/rent/success")
     public String rentSuccess(Model model) {
-        if (!model.containsAttribute("success")) return "redirect:/rent";
+        if (!model.containsAttribute("success"))
+            return "redirect:/rent";
         return "rent-success";
     }
 
@@ -135,7 +136,7 @@ public class RentalController {
     // ── Return ────────────────────────────────────────────────────────────────
     @GetMapping("/return")
     public String returnPage(Model model) {
-        model.addAttribute("rentedCars",    system.getRentedCars());
+        model.addAttribute("rentedCars", system.getRentedCars());
         model.addAttribute("activeRentals", system.getActiveRentals());
         return "return";
     }
@@ -144,7 +145,7 @@ public class RentalController {
     public String doReturn(@RequestParam String carId, RedirectAttributes ra) {
         try {
             Rental rental = system.returnCar(carId);
-            ra.addFlashAttribute("rental",  rental);
+            ra.addFlashAttribute("rental", rental);
             ra.addFlashAttribute("success", true);
         } catch (Exception e) {
             ra.addFlashAttribute("error", e.getMessage());
@@ -154,17 +155,18 @@ public class RentalController {
 
     @GetMapping("/return/success")
     public String returnSuccess(Model model) {
-        if (!model.containsAttribute("success")) return "redirect:/return";
+        if (!model.containsAttribute("success"))
+            return "redirect:/return";
         return "return-success";
     }
 
     // ── History ───────────────────────────────────────────────────────────────
     @GetMapping("/history")
     public String history(Model model) {
-        model.addAttribute("activeRentals",   system.getActiveRentals());
+        model.addAttribute("activeRentals", system.getActiveRentals());
         model.addAttribute("returnedRentals", system.getRentalHistory());
-        model.addAttribute("totalRevenue",    system.totalRevenue());
-        model.addAttribute("totalCount",      system.getAllRentals().size());
+        model.addAttribute("totalRevenue", system.totalRevenue());
+        model.addAttribute("totalCount", system.getAllRentals().size());
         return "history";
     }
 }
