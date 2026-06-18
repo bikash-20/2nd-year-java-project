@@ -6,6 +6,7 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 
 @RestController
@@ -19,17 +20,17 @@ public class ChatController {
 
     @PostMapping("/chat")
     public ResponseEntity<Object> chat(@RequestBody Map<String, Object> payload) {
-        // Build headers with API key (fallback to empty if not set)
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        if (openRouterKey != null && !openRouterKey.isBlank()) {
-            headers.setBearerAuth(openRouterKey);
-        }
-
-        // Forward the incoming payload to OpenRouter with robust error handling
-        HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, headers);
-        RestTemplate restTemplate = new RestTemplate();
         try {
+            // Build headers with API key (fallback to empty if not set)
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            if (openRouterKey != null && !openRouterKey.isBlank()) {
+                headers.setBearerAuth(openRouterKey.trim());
+            }
+
+            // Forward the incoming payload to OpenRouter with robust error handling
+            HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, headers);
+            RestTemplate restTemplate = new RestTemplate();
             ResponseEntity<String> response = restTemplate.exchange(
                     OPENROUTER_URL,
                     HttpMethod.POST,
@@ -42,11 +43,13 @@ public class ChatController {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body(Map.of("error", "OpenRouter returned non-JSON response. Possible authentication issue."));
             }
-            // Return OpenRouter's response as parsed JSON object to avoid double serialization issues
-            return ResponseEntity.status(response.getStatusCode()).body(body);
+            // Parse OpenRouter's JSON string into a Map to prevent double serialization
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, Object> jsonResponse = mapper.readValue(body, Map.class);
+            return ResponseEntity.status(response.getStatusCode()).body(jsonResponse);
         } catch (Exception e) {
             // Safely serialize the error as JSON using Spring's built-in Jackson
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Failed to contact OpenRouter: " + e.getMessage()));
+                    .body(Map.of("error", "Failed to process chat request: " + e.getMessage()));
         }
     }}

@@ -21,6 +21,7 @@ function sendMessage() {
     // Append user message
     const userDiv = document.createElement('div');
     userDiv.style.marginBottom = '8px';
+    userDiv.style.color = '#333';
     userDiv.textContent = 'You: ' + msg;
     body.appendChild(userDiv);
     input.value = '';
@@ -42,6 +43,7 @@ function sendMessage() {
         const reply = data.choices?.[0]?.message?.content || 'No response.';
         const aiDiv = document.createElement('div');
         aiDiv.style.marginBottom = '8px';
+        aiDiv.style.color = '#333';
         aiDiv.textContent = 'AI: ' + reply;
         body.appendChild(aiDiv);
         body.scrollTop = body.scrollHeight;
