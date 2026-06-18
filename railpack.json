@@ -1,0 +1,5 @@
+{
+  "env": {
+    "JAVA_HOME": "/root/.mise/installs/java/17.0.2"
+  }
+}
