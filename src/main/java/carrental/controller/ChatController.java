@@ -8,6 +8,15 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import carrental.repository.CarRepository;
+import carrental.repository.RentalRepository;
+import carrental.model.Car;
+import carrental.model.Rental;
 
 @RestController
 @RequestMapping("/api")
@@ -16,11 +25,47 @@ public class ChatController {
     @Value("${OPENROUTER_API_KEY:}")
     private String openRouterKey;
 
+    @Autowired
+    private CarRepository carRepository;
+
+    @Autowired
+    private RentalRepository rentalRepository;
+
     private static final String OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 
     @PostMapping("/chat")
     public ResponseEntity<Object> chat(@RequestBody Map<String, Object> payload) {
         try {
+            // Build Context Injection String from live database
+            List<Car> availableCars = carRepository.findByAvailableTrue();
+            List<Rental> activeRentals = rentalRepository.findByStatus(Rental.Status.ACTIVE);
+            
+            double totalRevenue = rentalRepository.findAll().stream()
+                .mapToDouble(Rental::getTotalPrice).sum();
+            
+            StringBuilder contextBuilder = new StringBuilder();
+            contextBuilder.append("LIVE SYSTEM DATA (Use this to answer the user's question accurately):\n");
+            contextBuilder.append("- Total Revenue: $").append(String.format("%.2f", totalRevenue)).append("\n");
+            contextBuilder.append("- Active Rentals: ").append(activeRentals.size()).append("\n");
+            contextBuilder.append("- Cars Currently Available to Rent (").append(availableCars.size()).append(" total):\n");
+            for (Car c : availableCars) {
+                contextBuilder.append("  * ").append(c.getBrand()).append(" ").append(c.getModel())
+                              .append(" ($").append(c.getBasePricePerDay()).append("/day)\n");
+            }
+            
+            Map<String, String> liveContextMsg = new HashMap<>();
+            liveContextMsg.put("role", "system");
+            liveContextMsg.put("content", contextBuilder.toString());
+            
+            // Inject into messages array
+            @SuppressWarnings("unchecked")
+            List<Map<String, String>> messages = (List<Map<String, String>>) payload.get("messages");
+            if (messages == null) {
+                messages = new ArrayList<>();
+                payload.put("messages", messages);
+            }
+            messages.add(0, liveContextMsg);
+
             // Build headers with API key (fallback to empty if not set)
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
