@@ -21,7 +21,7 @@
                 <a href="/history" class="nav-link" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/history' ? 'active' : ''}">History</a>
                 <a href="/charts" class="nav-link" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/charts' ? 'active' : ''}">Charts</a>
                 <a href="/cars" class="nav-link" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/cars' ? 'active' : ''}">Manage</a>
-        <a href="#" class="nav-link" onclick="toggleChatbot(); return false;">Chat</a>
+        <a href="#" class="nav-link" onclick="toggleChatbot(); return false;">✨ AI Assistant</a>
     </div>
 </nav>
 
@@ -33,11 +33,18 @@
         <p>Built by <strong>Bikash Talukder</strong> &nbsp;·&nbsp; Rentify v2.0 &nbsp;·&nbsp; Java + Spring Boot</p>
     </footer>
     <script th:src="@{/js/app.js}"></script>
+    <!-- Floating Chat Toggle Button -->
+    <button id="chatbot-toggle-btn" onclick="toggleChatbot()" style="position:fixed; bottom:20px; right:20px; width:60px; height:60px; border-radius:50%; background:#2c3e50; color:#fff; border:none; box-shadow:0 4px 12px rgba(0,0,0,0.3); font-size:28px; cursor:pointer; z-index:999; display:flex; align-items:center; justify-content:center; transition: transform 0.2s;">
+        💬
+    </button>
 
     <!-- Chatbot modal -->
-    <div id="chatbot-modal" class="chatbot-modal" style="display:none; position:fixed; bottom:20px; right:20px; width:300px; max-height:400px; background:#fff; border:1px solid #ccc; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.15); overflow:hidden;">
-        <div style="background:#2c3e50; color:#fff; padding:8px; cursor:pointer;" onclick="toggleChatbot()">Chat Assistant</div>
-        <div id="chatbot-body" style="padding:8px; overflow-y:auto; height:260px; font-family:Arial, sans-serif; font-size:14px;">
+    <div id="chatbot-modal" class="chatbot-modal" style="display:none; position:fixed; bottom:20px; right:20px; width:350px; max-width:calc(100vw - 40px); height:500px; max-height:calc(100vh - 100px); background:#fff; border:1px solid #ccc; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.2); overflow:hidden; z-index:1000; flex-direction:column;">
+        <div style="background:#2c3e50; color:#fff; padding:12px 16px; cursor:pointer; font-weight:600; display:flex; justify-content:space-between; align-items:center;" onclick="toggleChatbot()">
+            <span>✨ AI Assistant</span>
+            <span style="font-size:18px;">✕</span>
+        </div>
+        <div id="chatbot-body" style="padding:12px; overflow-y:auto; flex-grow:1; font-family:Arial, sans-serif; font-size:14px;">
             <!-- messages will be appended here -->
         </div>
         <div style="display:flex; border-top:1px solid #eee;">
