@@ -6,9 +6,14 @@ function toggleNav() {
 // ── Chatbot toggle and messaging ────────────────────────────────────────
 function toggleChatbot() {
     const modal = document.getElementById('chatbot-modal');
-    if (!modal) return;
-    const isVisible = modal.style.display && modal.style.display !== 'none';
-    modal.style.display = isVisible ? 'none' : 'block';
+    const btn = document.getElementById('chatbot-toggle-btn');
+    if (modal.style.display === 'none' || !modal.style.display) {
+        modal.style.display = 'flex';
+        if (btn) btn.style.display = 'none';
+    } else {
+        modal.style.display = 'none';
+        if (btn) btn.style.display = 'flex';
+    }
 }
 
 function sendMessage() {
