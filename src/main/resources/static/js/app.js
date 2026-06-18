@@ -29,7 +29,7 @@ function sendMessage() {
 
     // Prepare payload for OpenRouter via backend
     const payload = {
-        model: "openrouter/auto",
+        model: "meta-llama/llama-3.1-8b-instruct:free",
         messages: [{ role: "user", content: msg }]
     };
 
