@@ -1,42 +1,37 @@
-FROM openjdk:17-jdk-slim AS builder
+FROM eclipse-temurin:17-jdk-alpine AS builder
 
-# Install utilities Maven may need
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl git unzip && \
-    rm -rf /var/lib/apt/lists/*
+# Install utilities needed by Maven
+RUN apk add --no-cache curl git unzip
 
-# Create non‑root user for security
+# Create non-root user
 ARG USER=appuser
 ARG UID=1000
-RUN adduser --disabled-password --gecos "" --uid ${UID} ${USER}
+RUN adduser -D -u ${UID} -s /bin/sh -h /home/${USER} ${USER}
 WORKDIR /app
 
-# Copy Maven wrapper and pom for dependency caching
+# Maven wrapper and pom
 COPY .mvn/ .mvn/
 COPY mvnw pom.xml ./
-
-# Pre‑download dependencies (cached by Docker layer)
 RUN ./mvnw -B dependency:go-offline
 
-# Copy source code
+# Source code
 COPY src/ src/
 
-# Build the JAR (skip tests for CI speed)
+# Build JAR
 RUN ./mvnw -B -DskipTests clean package -Pproduction
 
-# Runtime stage – thin image
-FROM openjdk:17-jdk-slim AS runtime
+# Runtime stage
+FROM eclipse-temurin:17-jdk-alpine AS runtime
 WORKDIR /app
 COPY --from=builder /app/target/*.jar app.jar
 
-# Use same non‑root user
+# Use same non-root user
 ARG USER=appuser
 ARG UID=1000
-RUN adduser --disabled-password --gecos "" --uid ${UID} ${USER}
+RUN adduser -D -u ${UID} -s /bin/sh -h /home/${USER} ${USER}
 USER ${USER}
 
-# Port handling (Railway provides $PORT)
+# Port handling
 ENV SERVER_PORT=${PORT:-8080}
 EXPOSE ${SERVER_PORT}
-
 ENTRYPOINT ["java","-jar","app.jar"]
