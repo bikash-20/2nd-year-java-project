@@ -17,34 +17,42 @@ import java.util.stream.Collectors;
 @Service
 public class CarRentalSystem implements CommandLineRunner {
 
-    private final CarRepository      carRepo;
+    private final CarRepository carRepo;
     private final CustomerRepository customerRepo;
-    private final RentalRepository   rentalRepo;
+    private final RentalRepository rentalRepo;
 
     public CarRentalSystem(CarRepository carRepo,
-                           CustomerRepository customerRepo,
-                           RentalRepository rentalRepo) {
-        this.carRepo      = carRepo;
+            CustomerRepository customerRepo,
+            RentalRepository rentalRepo) {
+        this.carRepo = carRepo;
         this.customerRepo = customerRepo;
-        this.rentalRepo   = rentalRepo;
+        this.rentalRepo = rentalRepo;
     }
 
     @Override
     public void run(String... args) {
         if (carRepo.count() == 0) {
-            carRepo.save(new Car("C001", "Toyota",   "Camry",    60.0,  "Sedan"));
-            carRepo.save(new Car("C002", "Honda",    "Accord",   70.0,  "Sedan"));
-            carRepo.save(new Car("C003", "Mahindra", "Thar",    150.0,  "SUV"));
-            carRepo.save(new Car("C004", "Ford",     "Mustang", 200.0,  "Sports"));
-            carRepo.save(new Car("C005", "BMW",      "X5",      250.0,  "Luxury"));
-            carRepo.save(new Car("C006", "Hyundai",  "Creta",    80.0,  "SUV"));
+            carRepo.save(new Car("C001", "Toyota", "Camry", 60.0, "Sedan"));
+            carRepo.save(new Car("C002", "Honda", "Accord", 70.0, "Sedan"));
+            carRepo.save(new Car("C003", "Mahindra", "Thar", 150.0, "SUV"));
+            carRepo.save(new Car("C004", "Ford", "Mustang", 200.0, "Sports"));
+            carRepo.save(new Car("C005", "BMW", "X5", 250.0, "Luxury"));
+            carRepo.save(new Car("C006", "Hyundai", "Creta", 80.0, "SUV"));
         }
     }
 
     // ── Cars ──────────────────────────────────────────────────────────────────
-    public List<Car> getAllCars()        { return carRepo.findAll(); }
-    public List<Car> getAvailableCars() { return carRepo.findByAvailableTrue(); }
-    public List<Car> getRentedCars()    { return carRepo.findByAvailableFalse(); }
+    public List<Car> getAllCars() {
+        return carRepo.findAll();
+    }
+
+    public List<Car> getAvailableCars() {
+        return carRepo.findByAvailableTrue();
+    }
+
+    public List<Car> getRentedCars() {
+        return carRepo.findByAvailableFalse();
+    }
 
     public Car addCar(String carId, String brand, String model, double price, String category) {
         if (carRepo.existsById(carId))
@@ -69,7 +77,7 @@ public class CarRentalSystem implements CommandLineRunner {
 
     // ── Rentals (date-based) ──────────────────────────────────────────────────
     public Rental rentCar(String carId, String name, String phone,
-                          LocalDate startDate, LocalDate endDate) {
+            LocalDate startDate, LocalDate endDate) {
         Car car = carRepo.findById(carId)
                 .orElseThrow(() -> new IllegalArgumentException("Car not found: " + carId));
         if (!car.isAvailable())
@@ -102,16 +110,33 @@ public class CarRentalSystem implements CommandLineRunner {
     }
 
     // ── Stats ─────────────────────────────────────────────────────────────────
-    public long   totalCars()     { return carRepo.count(); }
-    public long   availableCars() { return carRepo.findByAvailableTrue().size(); }
-    public long   rentedCars()    { return carRepo.findByAvailableFalse().size(); }
-    public double totalRevenue()  {
+    public long totalCars() {
+        return carRepo.count();
+    }
+
+    public long availableCars() {
+        return carRepo.findByAvailableTrue().size();
+    }
+
+    public long rentedCars() {
+        return carRepo.findByAvailableFalse().size();
+    }
+
+    public double totalRevenue() {
         return rentalRepo.findAll().stream().mapToDouble(Rental::getTotalPrice).sum();
     }
 
-    public List<Rental> getActiveRentals()  { return rentalRepo.findByStatus(Rental.Status.ACTIVE); }
-    public List<Rental> getRentalHistory()  { return rentalRepo.findByStatus(Rental.Status.RETURNED); }
-    public List<Rental> getAllRentals()      { return rentalRepo.findAll(); }
+    public List<Rental> getActiveRentals() {
+        return rentalRepo.findByStatus(Rental.Status.ACTIVE);
+    }
+
+    public List<Rental> getRentalHistory() {
+        return rentalRepo.findByStatus(Rental.Status.RETURNED);
+    }
+
+    public List<Rental> getAllRentals() {
+        return rentalRepo.findAll();
+    }
 
     // ── Chart data ────────────────────────────────────────────────────────────
 
@@ -119,7 +144,8 @@ public class CarRentalSystem implements CommandLineRunner {
     public List<Map<String, Object>> getMonthlyRevenue() {
         int year = LocalDate.now().getYear();
         Map<Month, Double> map = new LinkedHashMap<>();
-        for (Month m : Month.values()) map.put(m, 0.0);
+        for (Month m : Month.values())
+            map.put(m, 0.0);
 
         rentalRepo.findAll().forEach(r -> {
             if (r.getStartDate() != null && r.getStartDate().getYear() == year) {
@@ -140,8 +166,7 @@ public class CarRentalSystem implements CommandLineRunner {
         Map<String, Long> map = rentalRepo.findAll().stream()
                 .collect(Collectors.groupingBy(
                         r -> r.getCar().getCategory(),
-                        Collectors.counting()
-                ));
+                        Collectors.counting()));
         return map.entrySet().stream().map(e -> {
             Map<String, Object> row = new LinkedHashMap<>();
             row.put("category", e.getKey());

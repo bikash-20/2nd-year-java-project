@@ -1,34 +1,50 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:fragment="layout(title, content)">
+
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title th:text="${title} + ' — AutoRent'">AutoRent</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com"/>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
-    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="${title} + ' — Rentify'">Rentify</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
 </head>
+
 <body>
-<nav class="navbar">
-    <a href="/" class="nav-logo">🚗 AutoRent</a>
-    <button class="nav-toggle" onclick="toggleNav()" aria-label="Menu">☰</button>
+    <nav class="navbar">
+    <a href="/" class="nav-logo">Rentify</a>
+    <button class="nav-toggle" onclick="toggleNav()" aria-label="Menu">Menu</button>
     <div class="nav-links" id="navLinks">
-        <a href="/"        class="nav-link">Dashboard</a>
-        <a href="/rent"    class="nav-link nav-cta">Rent a Car</a>
-        <a href="/return"  class="nav-link">Return</a>
-        <a href="/history" class="nav-link">History</a>
-        <a href="/charts"  class="nav-link nav-charts">📊 Charts</a>
-        <a href="/cars"    class="nav-link nav-manage">⚙ Manage</a>
+        <a href="/" class="nav-link" th:classappend="${#httpServletRequest.requestURI == '/' ? 'active' : ''}">Dashboard</a>
+        <a href="/rent" class="nav-link" th:classappend="${#httpServletRequest.requestURI == '/rent' ? 'active' : ''}">Rent a Car</a>
+        <a href="/return" class="nav-link" th:classappend="${#httpServletRequest.requestURI == '/return' ? 'active' : ''}">Return</a>
+        <a href="/history" class="nav-link" th:classappend="${#httpServletRequest.requestURI == '/history' ? 'active' : ''}">History</a>
+        <a href="/charts" class="nav-link" th:classappend="${#httpServletRequest.requestURI == '/charts' ? 'active' : ''}">Charts</a>
+        <a href="/cars" class="nav-link" th:classappend="${#httpServletRequest.requestURI == '/cars' ? 'active' : ''}">Manage</a>
+        <a href="#" class="nav-link" onclick="toggleChatbot(); return false;">Chat</a>
     </div>
 </nav>
 
-<main class="main-content">
-    <div th:replace="${content}"><!-- page content --></div>
-</main>
+    <main class="main-content">
+        <div th:replace="${content}"><!-- page content --></div>
+    </main>
 
-<footer class="footer">
-    <p>Built by <strong>Bikash Talukder</strong> &nbsp;·&nbsp; AutoRent v2.0 &nbsp;·&nbsp; Java + Spring Boot</p>
-</footer>
-<script th:src="@{/js/app.js}"></script>
+    <footer class="footer">
+        <p>Built by <strong>Bikash Talukder</strong> &nbsp;·&nbsp; Rentify v2.0 &nbsp;·&nbsp; Java + Spring Boot</p>
+    </footer>
+    <script th:src="@{/js/app.js}"></script>
+
+    <!-- Chatbot modal -->
+    <div id="chatbot-modal" class="chatbot-modal" style="display:none; position:fixed; bottom:20px; right:20px; width:300px; max-height:400px; background:#fff; border:1px solid #ccc; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.15); overflow:hidden;">
+        <div style="background:#2c3e50; color:#fff; padding:8px; cursor:pointer;" onclick="toggleChatbot()">Chat Assistant</div>
+        <div id="chatbot-body" style="padding:8px; overflow-y:auto; height:260px; font-family:Arial, sans-serif; font-size:14px;">
+            <!-- messages will be appended here -->
+        </div>
+        <div style="display:flex; border-top:1px solid #eee;">
+            <input id="chatbot-input" type="text" placeholder="Ask a question..." style="flex:1; border:none; padding:8px;" onkeydown="if(event.key==='Enter') sendMessage();" />
+            <button onclick="sendMessage()" style="border:none; background:#2c3e50; color:#fff; padding:0 12px;">Send</button>
+        </div>
+    </div>
+
 </body>
 </html>
