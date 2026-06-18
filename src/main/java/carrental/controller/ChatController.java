@@ -30,10 +30,10 @@ public class ChatController {
 
             // List of reliable free models to try in order
         String[] fallbackModels = {
-            "huggingfaceh4/zephyr-7b-beta:free",
-            "google/gemma-2-9b-it:free",
-            "meta-llama/llama-3-8b-instruct:free",
-            "mistralai/mistral-7b-instruct:free"
+            "openrouter/free",
+            "meta-llama/llama-3.3-70b-instruct:free",
+            "meta-llama/llama-3.2-3b-instruct:free",
+            "google/gemma-4-31b-it:free"
         };
 
         RestTemplate restTemplate = new RestTemplate();
