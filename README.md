@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🚗 AutoRent — Car Rental Management System
+# 🚗 RENTIFY — Car Rental Management System
 
 ### A full-stack web application built with Java & Spring Boot
 
@@ -16,31 +16,31 @@
 
 ---
 
-## 📌 Overview
+## Overview
 
-**AutoRent** is a fully functional Car Rental Management System developed as a 2nd-year Java project. It evolved from a basic console application into a production-ready full-stack web application, demonstrating real-world software development skills including layered architecture, database persistence, PDF generation, and data visualization.
+**Rentify** is a fully functional Car Rental Management System developed as a 2nd-year Java project. It evolved from a basic console application into a production-ready full-stack web application, demonstrating real-world software development skills including layered architecture, database persistence, PDF generation, and data visualization.
 
 > The project was first built as a **JavaFX desktop application**, then converted into a **Spring Boot web application** accessible from any device including mobile.
 
 ---
 
-## ✨ Features
+##  Features
 
 | Feature | Description |
 |---|---|
-| 📊 **Dashboard** | Live stats — total cars, available, rented, revenue |
-| 🔑 **Rent a Car** | Date picker with live price preview and double-booking prevention |
-| ↩️ **Return a Car** | Return any active rental with one click |
-| 📋 **Rental History** | Full record of active and completed rentals |
-| ⬇️ **PDF Receipts** | Download professional PDF receipt for any booking |
-| 📈 **Revenue Charts** | Monthly revenue bar chart + category doughnut chart |
-| ⚙️ **Manage Fleet** | Add new cars or delete existing ones from the UI |
-| 🗄️ **Database** | H2 persistent database — data survives server restarts |
-| 📱 **Mobile Friendly** | Fully responsive — works on phone, tablet, and desktop |
+|  **Dashboard** | Live stats — total cars, available, rented, revenue |
+|  **Rent a Car** | Date picker with live price preview and double-booking prevention |
+| ↩**Return a Car** | Return any active rental with one click |
+|  **Rental History** | Full record of active and completed rentals |
+|  **PDF Receipts** | Download professional PDF receipt for any booking |
+|  **Revenue Charts** | Monthly revenue bar chart + category doughnut chart |
+|  **Manage Fleet** | Add new cars or delete existing ones from the UI |
+|  **Database** | H2 persistent database — data survives server restarts |
+|  **Mobile Friendly** | Fully responsive — works on phone, tablet, and desktop |
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 ### Backend
 - **Java 17** — Core programming language
@@ -62,7 +62,7 @@
 
 ---
 
-## 🏗️ Project Architecture
+##  Project Architecture
 
 ```
 AutoRentWeb/
@@ -106,7 +106,7 @@ Controller (HTTP) → Service (Business Logic) → Repository (Database)
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 | Tool | Version | Download |
@@ -134,7 +134,7 @@ java -jar target/AutoRentWeb-1.0.jar
 
 ---
 
-## 📸 Screenshots
+##  Screenshots
 
 ### Dashboard
 > Live fleet overview with stat cards showing total cars, availability, and revenue
@@ -150,7 +150,7 @@ java -jar target/AutoRentWeb-1.0.jar
 
 ---
 
-## 📈 Project Evolution
+##  Project Evolution
 
 This project was built in stages to demonstrate progressive learning:
 
@@ -166,7 +166,7 @@ Stage 4 — Database + Features  JPA persistence, PDF, Charts, Date booking
 
 ---
 
-## 🔮 Future Enhancements
+##  Future Enhancements
 
 - [ ] User authentication (Admin + Customer login)
 - [ ] Email confirmation on booking
@@ -177,7 +177,7 @@ Stage 4 — Database + Features  JPA persistence, PDF, Charts, Date booking
 
 ---
 
-## 👨‍💻 Author
+##  Author
 
 <div align="center">
 
@@ -193,8 +193,8 @@ Stage 4 — Database + Features  JPA persistence, PDF, Charts, Date booking
 
 <div align="center">
 
-**⭐ If you found this project useful, please give it a star on GitHub!**
+** If you found this project useful, please give it a star on GitHub!**
 
-*Built with ❤️ using Java + Spring Boot*
+*Built with  using Java + Spring Boot*
 
 </div>
