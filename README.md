@@ -47,6 +47,7 @@
 |  **Manage Fleet** | Add new cars or delete existing ones from the UI |
 |  **Database** | H2 persistent database — data survives server restarts |
 |  **Mobile Friendly** | Fully responsive — works on phone, tablet, and desktop |
+|  **AI Assistant** | can answer anything about Rentify. things like checking available cars, rental prices, current revenues, billing details, and any other information about fleet |
 
 ---
 
