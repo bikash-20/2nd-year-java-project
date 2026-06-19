@@ -154,7 +154,7 @@ java -jar target/AutoRentWeb-1.0.jar
 
 ### Revenue Charts
 > Monthly revenue bar chart and category-wise doughnut chart powered by Chart.js
-
+### AI ASSISTANT
 ---
 
 ##  Project Evolution
