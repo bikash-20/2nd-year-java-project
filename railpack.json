@@ -3,17 +3,5 @@
     "packages": {
         "java": "17",
         "maven": "latest"
-    },
-    "build": {
-        "steps": {
-            "build": {
-                "commands": [
-                    "mvn -B -DskipTests clean package -Pproduction"
-                ]
-            }
-        }
-    },
-    "deploy": {
-        "startCommand": "java -Dserver.port=$PORT -jar target/AutoRentWeb-1.0.jar"
     }
 }
