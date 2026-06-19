@@ -37,7 +37,7 @@
 |---|---|
 |  **Dashboard** | Live stats — total cars, available, rented, revenue |
 |  **Rent a Car** | Date picker with live price preview and double-booking prevention |
-| ↩**Return a Car** | Return any active rental with one click |
+|  **Return a Car** | Return any active rental with one click |
 |  **Rental History** | Full record of active and completed rentals |
 |  **PDF Receipts** | Download professional PDF receipt for any booking |
 |  **Revenue Charts** | Monthly revenue bar chart + category doughnut chart |
