@@ -90,8 +90,9 @@ AutoRentWeb/
 │   ├── service/
 │   │   ├── CarRentalSystem.java         ← Business logic layer
 │   │   └── PdfService.java              ← PDF generation with iText
-│   └── controller/
-│       └── RentalController.java        ← HTTP routes + request handling
+│   └──controller/
+        |-chat controller.java         <- AI Assistant controll
+│       └──RentalController.java       ← HTTP routes + request handling
 └── src/main/resources/
     ├── templates/                        ← Thymeleaf HTML pages
     │   ├── layout.html                  ← Shared navbar + footer
