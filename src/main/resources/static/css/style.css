@@ -630,6 +630,31 @@ textarea.notes-input::placeholder { color: var(--hint); }
   line-height: 1.5;
 }
 
+/* ── Chatbot Expand/Maximize ───────────── */
+.chatbot-maxbtn {
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s;
+}
+.chatbot-maxbtn:hover { background: rgba(255,255,255,0.25); }
+
+/* ── Chatbot Expanded State ─────────────── */
+.chatbot-modal.expanded {
+  width: min(90vw, 700px) !important;
+  height: min(85vh, 720px) !important;
+  max-width: none !important;
+  max-height: none !important;
+}
+
 /* ── Chatbot Button (floating) ───────────── */
 #chatbot-toggle-btn {
   position: fixed;
@@ -674,6 +699,8 @@ textarea.notes-input::placeholder { color: var(--hint); }
   display: none;
   flex-direction: column;
   animation: slideUp .3s ease;
+  /* Allow user to drag-resize the chatbot */
+  resize: both;
 }
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(20px); }
@@ -971,7 +998,16 @@ textarea.notes-input::placeholder { color: var(--hint); }
 
 /* ── Responsive chatbot ──────────────────── */
 @media (max-width: 480px) {
-  .chatbot-modal { bottom: 0; right: 0; width: 100%; height: 100%; max-width: none; max-height: none; border-radius: 0; }
+  .chatbot-modal {
+    bottom: 0; right: 0; width: 100% !important; height: 100% !important;
+    max-width: none !important; max-height: none !important;
+    border-radius: 0;
+  }
+  .chatbot-modal.expanded {
+    width: 100% !important;
+    height: 100% !important;
+  }
+  .chatbot-resize-handle { display: none; }
   #chatbot-toggle-btn { bottom: 16px; right: 16px; width: 54px; height: 54px; font-size: 24px; }
 }
 
@@ -1094,17 +1130,102 @@ textarea.notes-input::placeholder { color: var(--hint); }
 
 /* ── Mobile nav ──────────────────────────── */
 @media (max-width: 639px) {
-  .nav-toggle { display: block; }
+  .navbar { padding: 0 12px; min-height: 54px; }
+  .nav-logo { font-size: 18px; }
+  .nav-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 0;
+    cursor: pointer;
+    padding: 0;
+    transition: background .15s;
+  }
+  .nav-toggle::before {
+    content: '';
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: var(--muted);
+    box-shadow: 0 -6px 0 var(--muted), 0 6px 0 var(--muted);
+    transition: background .15s;
+  }
+  .nav-toggle:hover { background: var(--border); }
+  .nav-links.open ~ .nav-toggle::before,
+  .nav-toggle.open::before { display: none; }
+  .nav-toggle.open {
+    position: relative;
+  }
+  .nav-toggle.open::before {
+    display: block;
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 20px;
+    height: 2px;
+    background: var(--muted);
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+  .nav-toggle.open::after {
+    display: block;
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 20px;
+    height: 2px;
+    background: var(--muted);
+    transform: translate(-50%, -50%) rotate(-45deg);
+    box-shadow: none;
+  }
   .nav-links {
     display: none;
     flex-direction: column;
     width: 100%;
-    padding: 10px 0 16px;
+    padding: 8px 0 14px;
     gap: 2px;
+    animation: navSlideDown .2s ease;
+  }
+  @keyframes navSlideDown {
+    from { opacity: 0; max-height: 0; }
+    to   { opacity: 1; max-height: 400px; }
   }
   .nav-links.open { display: flex; }
-  .nav-link { width: 100%; padding: 10px 14px; }
+  .nav-link {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 15px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  .theme-btn {
+    width: 44px;
+    height: 44px;
+    margin: 4px 0;
+    align-self: flex-start;
+  }
   .stat-value { font-size: 24px; }
+  .page-title { font-size: 22px; }
+  .page-sub { font-size: 13px; }
+  .main-content { padding: 20px 12px 40px; }
+}
+
+/* ── Extra small devices ─────────────────── */
+@media (max-width: 380px) {
+  .insight-card { padding: 12px; gap: 10px; }
+  .insight-value { font-size: 14px; }
+  .stat-card { padding: 14px; }
+  .stat-value { font-size: 20px; }
+  .card { padding: 14px; }
+  .btn { padding: 10px 16px; font-size: 13px; min-height: 44px; }
+  .chatbot-modal { bottom: 0; right: 0; width: 100% !important; height: 100% !important; max-width: none; max-height: none; border-radius: 0; }
+  .table td, .table th { padding: 8px 10px; font-size: 12px; }
 }
 
 /* ── Manage Cars page ────────────────────── */

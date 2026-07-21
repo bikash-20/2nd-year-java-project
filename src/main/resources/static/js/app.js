@@ -1,6 +1,9 @@
 // ── Mobile nav ───────────────────────────────────────────────────────────────
 function toggleNav() {
-    document.getElementById('navLinks').classList.toggle('open');
+    const nav = document.getElementById('navLinks');
+    const btn = document.querySelector('.nav-toggle');
+    nav.classList.toggle('open');
+    if (btn) btn.classList.toggle('open');
 }
 
 // ── Markdown + LaTeX renderer ────────────────────────────────────────────────    function renderRichText(text) {
@@ -114,10 +117,28 @@ function toggleChatbot() {
     if (!modal) return;
     if (modal.classList.contains('open')) {
         modal.classList.remove('open');
+        modal.classList.remove('expanded');
         if (btn) btn.classList.remove('hidden');
     } else {
         modal.classList.add('open');
         if (btn) btn.classList.add('hidden');
+    }
+}
+
+// ── Chatbot expand/collapse ───────────────────────────────────────────────────
+function toggleChatbotSize() {
+    const modal = document.getElementById('chatbot-modal');
+    const btn = document.getElementById('chatbot-toggle-btn');
+    if (!modal) return;
+    modal.classList.toggle('expanded');
+    // Update icon
+    const svgBtn = modal.querySelector('.chatbot-maxbtn svg');
+    if (svgBtn) {
+        if (modal.classList.contains('expanded')) {
+            svgBtn.innerHTML = '<polyline points="4 14 10 14 10 20"></polyline><polyline points="20 10 14 10 14 4"></polyline><line x1="14" y1="10" x2="21" y2="3"></line><line x1="10" y1="14" x2="3" y2="21"></line>';
+        } else {
+            svgBtn.innerHTML = '<polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line>';
+        }
     }
 }
 
