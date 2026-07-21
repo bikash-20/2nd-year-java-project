@@ -179,7 +179,7 @@ function sendMessage() {
     })
     .catch(err => {
         hideTyping();
-        const errMsg = '😅 Sorry, I ran into an issue: ' + err.message;
+        const errMsg = 'Sorry, I ran into an issue: ' + err.message;
         addMessage(errMsg, 'ai');
     });
 }

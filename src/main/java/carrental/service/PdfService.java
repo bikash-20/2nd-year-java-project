@@ -46,7 +46,7 @@ public class PdfService {
         Font footerFont = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL, MUTED);
 
         // Logo in header
-        Paragraph logo = new Paragraph("🚗  Rentify", logoFont);
+        Paragraph logo = new Paragraph("Rentify", logoFont);
         logo.setAlignment(Element.ALIGN_CENTER);
         logo.setSpacingBefore(16);
         doc.add(logo);

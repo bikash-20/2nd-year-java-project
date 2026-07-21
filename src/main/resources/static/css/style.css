@@ -1007,7 +1007,6 @@ textarea.notes-input::placeholder { color: var(--hint); }
     width: 100% !important;
     height: 100% !important;
   }
-  .chatbot-resize-handle { display: none; }
   #chatbot-toggle-btn { bottom: 16px; right: 16px; width: 54px; height: 54px; font-size: 24px; }
 }
 

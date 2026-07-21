@@ -61,11 +61,11 @@ public class ActivityLog {
 
     public String getActionIcon() {
         switch (action) {
-            case CAR_ADDED:    return "➕";
-            case CAR_DELETED:  return "🗑";
-            case CAR_RENTED:   return "🔑";
-            case CAR_RETURNED: return "✅";
-            default:           return "📋";
+            case CAR_ADDED:    return "+";
+            case CAR_DELETED:  return "-";
+            case CAR_RENTED:   return "→";
+            case CAR_RETURNED: return "✓";
+            default:           return "•";
         }
     }
 
