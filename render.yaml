@@ -4,17 +4,12 @@
 services:
   - type: web
     name: rentify
-    env: java
+    runtime: docker
+    dockerfilePath: ./Dockerfile
     plan: free
-    buildCommand: mvn clean package -DskipTests
-    startCommand: java -jar target/AutoRentWeb-1.0.jar
     healthCheckPath: /
     autoDeploy: true
     branch: main
     envVars:
       - key: PORT
         value: 8080
-      - key: SPRING_THYMELEAF_CACHE
-        value: "false"
-      - key: JAVA_HOME
-        value: /opt/render/projects/Java/openjdk-17
