@@ -110,6 +110,10 @@ public class ChatController {
 
                     ObjectMapper mapper = new ObjectMapper();
                     Map<String, Object> jsonResponse = mapper.readValue(body, Map.class);
+                    // Server-side HTML safety: strip any raw HTML tags from the AI's response
+                    // before sending to the frontend. Free-tier models sometimes output
+                    // <li>, <p>, <strong> etc. despite instructions to use plain markdown.
+                    stripHtmlFromResponse(jsonResponse);
                     return ResponseEntity.status(response.getStatusCode()).body(jsonResponse);
 
                 } catch (org.springframework.web.client.HttpStatusCodeException e) {
@@ -344,5 +348,30 @@ public class ChatController {
 
     private String fmt(double value) {
         return String.format("%.2f", value);
+    }
+
+    /**
+     * Recursively strips raw HTML tags from the AI response content.
+     * Free-tier models sometimes output <li>, <p>, <strong> etc. despite
+     * being instructed to use plain markdown. This server-side safety net
+     * removes them so the frontend never has to deal with raw HTML.
+     */
+    @SuppressWarnings("unchecked")
+    private void stripHtmlFromResponse(Map<String, Object> response) {
+        try {
+            List<Map<String, Object>> choices = (List<Map<String, Object>>) response.get("choices");
+            if (choices == null || choices.isEmpty()) return;
+            for (Map<String, Object> choice : choices) {
+                Map<String, Object> message = (Map<String, Object>) choice.get("message");
+                if (message == null) continue;
+                String content = (String) message.get("content");
+                if (content == null) continue;
+                // Strip ALL HTML tags using regex
+                content = content.replaceAll("<[^>]*>", "");
+                message.put("content", content);
+            }
+        } catch (Exception e) {
+            // silently skip — don't break the response
+        }
     }
 }
