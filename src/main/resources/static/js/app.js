@@ -9,28 +9,31 @@ function toggleNav() {
 // ── Markdown + LaTeX renderer ────────────────────────────────────────────────
 function renderRichText(text) {
     if (!text) return '';
-    // Configure marked
+    // Step 1: Escape ALL raw HTML entities BEFORE markdown parsing.
+    // This is the most robust approach — any <li>, <p>, <strong> from the AI
+    // becomes &lt;li&gt; etc. and renders as visible text instead of HTML.
+    // Markdown syntax like **bold** / - lists / `code` don't use < or >,
+    // so marked can still convert them to proper HTML tags.
+    // KaTeX $...$ syntax also doesn't use < or >, so it's unaffected.
+    let escaped = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+    // Step 2: Convert markdown → HTML using marked.js
     if (typeof marked !== 'undefined') {
-        // Override the HTML renderer to ESCAPE raw HTML tags from the AI
-        // instead of rendering them as actual HTML elements.
-        // This way `**bold**` still becomes <strong> via markdown,
-        // but stray <li>, <p>, <strong> from the AI show as literal text.
-        const renderer = new marked.Renderer();
-        renderer.html = function (rawHtml) {
-            return rawHtml.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        };
         marked.setOptions({
             breaks: true,
-            gfm: true,
-            renderer: renderer
+            gfm: true
         });
-        // Convert markdown to HTML (synchronous)
-        let html = marked.parse(text);
-        // Sanitize remaining HTML (just in case)
+        let html = marked.parse(escaped);
+
+        // Step 3: Sanitize (belt-and-suspenders)
         if (typeof DOMPurify !== 'undefined') {
             html = DOMPurify.sanitize(html);
         }
-        // Render LaTeX: inline $...$ and display $$...$$
+
+        // Step 4: Render LaTeX — operates on the already-rendered HTML
         if (typeof katex !== 'undefined') {
             // Display math $$...$$
             html = html.replace(/\$\$([\s\S]*?)\$\$/g, (_, eq) => {
@@ -49,10 +52,12 @@ function renderRichText(text) {
                 }
             });
         }
+
         return html;
     }
-    // Fallback: escape HTML
-    return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+    // Fallback: already escaped above
+    return escaped;
 }
 
 // ── Quick ask from hint chips ────────────────────────────────────────────────
