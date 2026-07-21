@@ -160,8 +160,9 @@ function sendMessage() {
     addMessage(msg, 'user');
     input.value = '';
 
-    // Add to history
+    // Add to history and persist
     chatHistory.push({ role: "user", content: msg });
+    saveChatHistory();
 
     // Show typing
     showTyping();
@@ -180,6 +181,7 @@ function sendMessage() {
         }
         const reply = data.choices?.[0]?.message?.content || 'No response.';
         chatHistory.push({ role: "assistant", content: reply });
+        saveChatHistory();
         addMessage(reply, 'ai');
     })
     .catch(err => {
@@ -273,16 +275,62 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// ── Chat history ─────────────────────────────────────────────────────────────
-let chatHistory = [
-    {
-        role: "system",
-        content: "You are the official AI assistant for Rentify, a car rental web application built by BIKASH TALUKDER during his 2nd year of CSE. Your primary purpose is to help customers and administrators with the app's features, including car prices, billing, available cars, and revenue tracking. \n\nCRITICAL RULES:\n1. When the user sends a greeting (e.g., 'hi', 'hello', 'hlw'), you MUST greet them back, introduce yourself as the Rentify assistant built by Bikash, briefly list what you can help with, and ask them what they would like to know.\n2. LIVE DATA: The system will silently inject real-time database stats (revenue, available cars, active rentals) into the conversation before the user's message. Use this live data confidently to answer any specific questions about available cars or revenue!\n3. FORMATTING — ABSOLUTE RULE: You MUST respond using ONLY plain Markdown. You are FORBIDDEN from outputting ANY HTML tags WHATSOEVER — including <li>, <p>, <strong>, <b>, <i>, <ul>, <ol>, <div>, <span>, <br>, <a>, <table>, <tr>, <td>, or any other HTML tag. When you need lists, use Markdown syntax: - items or 1. items. When you need emphasis, use **bold** or *italic*. When you need code, use single `backticks` or triple ``` backticks. The rendering system automatically strips ANY HTML you output, and the output will be displayed as broken text to users. So ALWAYS use only Markdown syntax, NEVER HTML.\n4. You MAY use $LaTeX$ math notation when showing calculations like $total = rate \\times days$. This makes your answers beautiful and professional!\n5. If they ask out-of-context questions, answer politely but remind them you are the Rentify assistant."
+// ── Chat history (persisted in sessionStorage) ──────────────────────────────
+const SYSTEM_PROMPT = "You are the official AI assistant for Rentify, a car rental web application built by BIKASH TALUKDER during his 2nd year of CSE. Your primary purpose is to help customers and administrators with the app's features, including car prices, billing, available cars, and revenue tracking. \n\nCRITICAL RULES:\n1. When the user sends a greeting (e.g., 'hi', 'hello', 'hlw'), you MUST greet them back, introduce yourself as the Rentify assistant built by Bikash, briefly list what you can help with, and ask them what they would like to know.\n2. LIVE DATA: The system will silently inject real-time database stats (revenue, available cars, active rentals) into the conversation before the user's message. Use this live data confidently to answer any specific questions about available cars or revenue!\n3. FORMATTING — ABSOLUTE RULE: You MUST respond using ONLY plain Markdown. You are FORBIDDEN from outputting ANY HTML tags WHATSOEVER — including <li>, <p>, <strong>, <b>, <i>, <ul>, <ol>, <div>, <span>, <br>, <a>, <table>, <tr>, <td>, or any other HTML tag. When you need lists, use Markdown syntax: - items or 1. items. When you need emphasis, use **bold** or *italic*. When you need code, use single `backticks` or triple ``` backticks. The rendering system automatically strips ANY HTML you output. So ALWAYS use only Markdown syntax, NEVER HTML.\n4. You MAY use $LaTeX$ math notation when showing calculations like $total = rate \\times days$. This makes your answers beautiful and professional!\n5. If they ask out-of-context questions, answer politely but remind them you are the Rentify assistant.";
+
+function getChatHistory() {
+    const stored = sessionStorage.getItem('rentify-chat');
+    if (stored) {
+        try {
+            const parsed = JSON.parse(stored);
+            if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].role === 'system') {
+                return parsed;
+            }
+        } catch (e) { /* fall through */ }
     }
-];
+    return [{ role: "system", content: SYSTEM_PROMPT }];
+}
+
+function saveChatHistory() {
+    try {
+        sessionStorage.setItem('rentify-chat', JSON.stringify(chatHistory));
+    } catch (e) { /* quota exceeded, ignore */ }
+}
+
+// Load or initialize chat history
+let chatHistory = getChatHistory();
+
+// ── Restore chat bubbles on page load ────────────────────────────────────────
+function restoreChatBubbles() {
+    const body = document.getElementById('chatbot-body');
+    if (!body) return;
+    // Remove welcome message if there are existing messages
+    const history = chatHistory.filter(m => m.role !== 'system');
+    if (history.length > 0) {
+        const welcome = body.querySelector('.chatbot-welcome');
+        if (welcome) welcome.remove();
+        history.forEach(msg => {
+            const bubble = document.createElement('div');
+            bubble.className = 'chatbot-msg ' + (msg.role === 'user' ? 'msg-user' : 'msg-ai');
+            if (msg.role === 'user') {
+                bubble.textContent = msg.content;
+            } else {
+                const inner = document.createElement('div');
+                inner.className = 'msg-content';
+                inner.innerHTML = renderRichText(msg.content);
+                bubble.appendChild(inner);
+            }
+            body.appendChild(bubble);
+        });
+        body.scrollTop = body.scrollHeight;
+    }
+}
 
 // ── DOMContentLoaded ─────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+    // Restore chat bubbles from sessionStorage
+    restoreChatBubbles();
+
     const startInput = document.getElementById('startDate');
     if (startInput && !startInput.value) {
         startInput.value = new Date().toISOString().split('T')[0];
