@@ -198,11 +198,14 @@ erDiagram
 - **Java 17+** ([Download](https://adoptium.net))
 - **Maven 3.8+** ([Download](https://maven.apache.org))
 
+### Live Demo
+The app is live at: **https://rentify-ifs4.onrender.com**
+
 ### Run Locally
 ```bash
 # Clone the repository
-git clone https://github.com/bikash-20/2nd-year-java-project.git
-cd 2nd-year-java-project
+git clone https://github.com/bikashpubg678-maker/Rentify-java-project.git
+cd Rentify-java-project
 
 # Run the application
 mvn spring-boot:run

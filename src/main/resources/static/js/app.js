@@ -3,18 +3,26 @@ function toggleNav() {
     document.getElementById('navLinks').classList.toggle('open');
 }
 
-// ── Markdown + LaTeX renderer ────────────────────────────────────────────────
-function renderRichText(text) {
+// ── Markdown + LaTeX renderer ────────────────────────────────────────────────    function renderRichText(text) {
     if (!text) return '';
     // Configure marked
     if (typeof marked !== 'undefined') {
+        // Override the HTML renderer to ESCAPE raw HTML tags from the AI
+        // instead of rendering them as actual HTML elements.
+        // This way `**bold**` still becomes <strong> via markdown,
+        // but stray <li>, <p>, <strong> from the AI show as literal text.
+        const renderer = new marked.Renderer();
+        renderer.html = function (rawHtml) {
+            return rawHtml.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        };
         marked.setOptions({
             breaks: true,
-            gfm: true
+            gfm: true,
+            renderer: renderer
         });
         // Convert markdown to HTML (synchronous)
         let html = marked.parse(text);
-        // Sanitize
+        // Sanitize remaining HTML (just in case)
         if (typeof DOMPurify !== 'undefined') {
             html = DOMPurify.sanitize(html);
         }
@@ -242,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
 let chatHistory = [
     {
         role: "system",
-        content: "You are the official AI assistant for Rentify, a car rental web application built by BIKASH TALUKDER during his 2nd year of CSE. Your primary purpose is to help customers and administrators with the app's features, including car prices, billing, available cars, and revenue tracking. \n\nIMPORTANT RULES:\n1. When the user sends a greeting (e.g., 'hi', 'hello', 'hlw'), you MUST greet them back, introduce yourself as the Rentify assistant built by Bikash, briefly list what you can help with, and ask them what they would like to know.\n2. LIVE DATA: The system will silently inject real-time database stats (revenue, available cars, active rentals) into the conversation before the user's message. Use this live data confidently to answer any specific questions about available cars or revenue!\n3. FORMATTING: You should use Markdown formatting for your responses - use **bold** for emphasis, `code` for technical terms, bullet lists for multiple items, and $LaTeX$ math notation when showing calculations like $total = rate \\times days$. This makes your answers beautiful and professional!\n4. If they ask out-of-context questions, answer politely but remind them you are the Rentify assistant."
+        content: "You are the official AI assistant for Rentify, a car rental web application built by BIKASH TALUKDER during his 2nd year of CSE. Your primary purpose is to help customers and administrators with the app's features, including car prices, billing, available cars, and revenue tracking. \n\nCRITICAL RULES:\n1. When the user sends a greeting (e.g., 'hi', 'hello', 'hlw'), you MUST greet them back, introduce yourself as the Rentify assistant built by Bikash, briefly list what you can help with, and ask them what they would like to know.\n2. LIVE DATA: The system will silently inject real-time database stats (revenue, available cars, active rentals) into the conversation before the user's message. Use this live data confidently to answer any specific questions about available cars or revenue!\n3. FORMATTING — STRICT RULES: Use ONLY plain Markdown formatting. NEVER output raw HTML tags like <li>, <p>, <strong>, <b>, <i>, <ul>, <ol>, <div>, <span>, or any other HTML tags. If you need lists, use Markdown syntax (- items or 1. items). If you need emphasis, use **bold** or *italic*. If you need code, use `backticks`. The system renders your output through a Markdown parser that does NOT support raw HTML — any raw HTML tags you include will be shown as literal ugly text to the user. So ALWAYS use pure Markdown, never HTML.\n4. You MAY use $LaTeX$ math notation when showing calculations like $total = rate \\times days$. This makes your answers beautiful and professional!\n5. If they ask out-of-context questions, answer politely but remind them you are the Rentify assistant."
     }
 ];
 
