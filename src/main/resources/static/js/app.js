@@ -6,7 +6,8 @@ function toggleNav() {
     if (btn) btn.classList.toggle('open');
 }
 
-// ── Markdown + LaTeX renderer ────────────────────────────────────────────────    function renderRichText(text) {
+// ── Markdown + LaTeX renderer ────────────────────────────────────────────────
+function renderRichText(text) {
     if (!text) return '';
     // Configure marked
     if (typeof marked !== 'undefined') {
