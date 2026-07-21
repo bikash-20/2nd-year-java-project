@@ -13,7 +13,7 @@
 
     <!-- No rented cars -->
     <div th:if="${#lists.isEmpty(rentedCars)}" class="empty-state card">
-        <div class="empty-icon">🚗</div>
+        <div class="empty-icon"></div>
         <h3>No Cars Currently Rented</h3>
         <p>All cars are available. Rent one first!</p>
         <a href="/rent" class="btn btn-primary">Rent a Car</a>
@@ -43,7 +43,7 @@
                 </div>
 
                 <div class="btn-row">
-                    <button type="submit" class="btn btn-primary btn-full">↩ Confirm Return</button>
+                    <button type="submit" class="btn btn-primary btn-full">Confirm Return</button>
                     <a href="/" class="btn btn-secondary btn-full">Cancel</a>
                 </div>
 

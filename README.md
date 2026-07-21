@@ -1,212 +1,353 @@
-<div align="center">
+# Rentify — Car Rental Management System
 
-# 🚗 RENTIFY — Car Rental Management System
+A full-stack Car Rental Management System built with **Java 17** and **Spring Boot 3.2.5**. Evolved from a console application into a production-ready web platform featuring a 3-layer architecture, H2 database persistence, PDF receipt generation, Chart.js analytics, loyalty discounts, and an AI assistant powered by OpenRouter.
 
-### A full-stack web application built with Java & Spring Boot
-
-[![Java](https://img.shields.io/badge/Java-17-orange?style=for-the-badge&logo=java)](https://adoptium.net)
-[![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.2.5-green?style=for-the-badge&logo=springboot)](https://spring.io/projects/spring-boot)
-[![H2 Database](https://img.shields.io/badge/Database-H2-blue?style=for-the-badge&logo=h2)](https://h2database.com)
-[![Maven](https://img.shields.io/badge/Maven-3.9-red?style=for-the-badge&logo=apachemaven)](https://maven.apache.org)
-[![License](https://img.shields.io/badge/License-MIT-purple?style=for-the-badge)](LICENSE)
-
-**[🌐 Live Demo](https://web-production-377eb.up.railway.app/) · [📁 Source Code](https://github.com/bikash-20/rental-car-java-project) · [📸 Screenshots](<img width="1280" height="721" alt="image" src="https://github.com/user-attachments/assets/d760ff9c-e1aa-4de9-800f-ac8136ef5a08" />
-)** <img width="1280" height="721" alt="image" src="https://github.com/user-attachments/assets/40a22990-8cb6-4275-b529-e8fa40f4bc1f" />
-<img width="1201" height="700" alt="image" src="https://github.com/user-attachments/assets/6cc2f184-8c7d-4ec7-886b-412f957c3bd7" />
-
-<img width="517" height="659" alt="image" src="https://github.com/user-attachments/assets/e393f869-01db-4e32-a2c4-8e04e668b64f" />
-<img width="1263" height="713" alt="image" src="https://github.com/user-attachments/assets/d6829dc1-e46f-4040-bb29-ead467fe6790" />
-<img width="1280" height="713" alt="image" src="https://github.com/user-attachments/assets/266c33ac-3dc6-40b4-a9b1-80ddee6920b4" />
-
-<img width="1263" height="713" alt="image" src="https://github.com/user-attachments/assets/16c89970-82f7-497a-8d42-e107111a609d" />
-
-
-
-</div>
+![Version](https://img.shields.io/badge/version-2.0-blue)
+![Java](https://img.shields.io/badge/Java-17-orange)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.2.5-green)
+![License](https://img.shields.io/badge/license-MIT-lightgrey)
 
 ---
 
-## Overview
+## Architecture & System Design
 
-**Rentify** is a fully functional Car Rental Management System developed as a 2nd-year Java project. It evolved from a basic console application into a production-ready full-stack web application, demonstrating real-world software development skills including layered architecture, database persistence, PDF generation, and data visualization.
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    PRESENTATION LAYER                        │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌─────────────┐ │
+│  │Thymeleaf │  │ HTML/CSS │  │Chart.js  │  │  AI Chatbot │ │
+│  │Templates │  │  (RWD)   │  │(Analytics)│  │ (Markdown)  │ │
+│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └──────┬──────┘ │
+│       │              │              │                │       │
+├───────┴──────────────┴──────────────┴────────────────┴───────┤
+│                    CONTROLLER LAYER                            │
+│  ┌─────────────────────────────────────────────────────────┐  │
+│  │           RentalController (HTTP Routes)                 │  │
+│  │  /  /rent  /return  /history  /charts  /cars  /customer │  │
+│  │  /about  /agreement/{id}  /activity  /export/csv        │  │
+│  └──────────────────────┬──────────────────────────────────┘  │
+│  ┌──────────────────────┴──────────────────────────────────┐  │
+│  │              ChatController (AI - REST API)              │  │
+│  │  POST /api/chat  →  OpenRouter (Free LLM Models)        │  │
+│  │  Injects live DB context → Intelligent responses        │  │
+│  └──────────────────────┬──────────────────────────────────┘  │
+├─────────────────────────┴────────────────────────────────────┤
+│                    SERVICE LAYER                               │
+│  ┌─────────────────────────────────────────────────────────┐  │
+│  │              CarRentalSystem (Business Logic)             │  │
+│  │  ┌───────────┐ ┌──────────┐ ┌─────────┐ ┌───────────┐  │  │
+│  │  │ Fleet Mgmt│ │Rental    │ │Customer │ │ Analytics  │  │  │
+│  │  │ CRUD      │ │Booking   │ │Loyalty  │ │ Insights   │  │  │
+│  │  └───────────┘ └──────────┘ └─────────┘ └───────────┘  │  │
+│  │  ┌───────────┐ ┌──────────┐ ┌───────────────────────┐  │  │
+│  │  │ PDF Gen   │ │Activity  │ │ Rating & Review       │  │  │
+│  │  │ (iText)   │ │ Logging  │ │ System                │  │  │
+│  │  └───────────┘ └──────────┘ └───────────────────────┘  │  │
+│  └──────────────────────┬──────────────────────────────────┘  │
+├─────────────────────────┴────────────────────────────────────┤
+│                    REPOSITORY LAYER (Spring Data JPA)           │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐    │
+│  │ CarRepository │  │ RentalRepo   │  │ CustomerRepo     │    │
+│  │ (CRUD + Query)│  │ (Overlap +   │  │ (Phone Search)   │    │
+│  └──────┬───────┘  │  Status)     │  └────────┬─────────┘    │
+│         │          └──────┬───────┘           │               │
+│         └─────────────────┴───────────────────┘               │
+├────────────────────────────┴──────────────────────────────────┤
+│                    DATABASE LAYER                               │
+│  ┌─────────────────────────────────────────────────────────┐  │
+│  │              H2 Database (Embedded SQL)                   │  │
+│  │  ┌───────────┐  ┌───────────┐  ┌─────────────────────┐  │  │
+│  │  │   cars    │  │ customers │  │      rentals        │  │  │
+│  │  │ ────PK   │  │ ────PK   │  │ ────PK               │  │  │
+│  │  │ car_id    │  │ id        │  │ car_id (FK → cars)  │  │  │
+│  │  │ brand     │  │ name      │  │ customer_id (FK→cus)│  │  │
+│  │  │ model     │  │ phone     │  │ start_date          │  │  │
+│  │  │ price     │  │ rental_cnt│  │ end_date            │  │  │
+│  │  │ category  │  │ discount  │  │ total_price         │  │  │
+│  │  └───────────┘  └───────────┘  │ status (ACTIVE/    │  │  │
+│  │  ┌───────────┐                 │ RETURNED)           │  │  │
+│  │  │ activity  │                 │ rating, notes       │  │  │
+│  │  │ _log      │                 └─────────────────────┘  │  │
+│  │  └───────────┘                                          │  │
+│  └─────────────────────────────────────────────────────────┘  │
+└───────────────────────────────────────────────────────────────┘
+```
 
-> The project was first built as a **JavaFX desktop application**, then converted into a **Spring Boot web application** accessible from any device including mobile.
+### Design Patterns
+
+| Pattern | Usage |
+|---------|-------|
+| **3-Layer Architecture** | Controller → Service → Repository — clean separation of concerns |
+| **Dependency Injection** | Spring Boot DI for all services and repositories |
+| **Repository Pattern** | Spring Data JPA for database abstraction |
+| **DTO Pattern** | Model entities used across layers |
+| **Template Method** | Thymeleaf layouts for consistent UI |
+| **Strategy Pattern** | Fallback model strategy for AI chatbot |
 
 ---
 
-##  Features
+## Features
 
+### Core Features
 | Feature | Description |
-|---|---|
-|  **Dashboard** | Live stats — total cars, available, rented, revenue |
-|  **Rent a Car** | Date picker with live price preview and double-booking prevention |
-|  **Return a Car** | Return any active rental with one click |
-|  **Rental History** | Full record of active and completed rentals |
-|  **PDF Receipts** | Download professional PDF receipt for any booking |
-|  **Revenue Charts** | Monthly revenue bar chart + category doughnut chart |
-|  **Manage Fleet** | Add new cars or delete existing ones from the UI |
-|  **Database** | H2 persistent database — data survives server restarts |
-|  **Mobile Friendly** | Fully responsive — works on phone, tablet, and desktop |
-|  **AI Assistant** | can answer anything about Rentify. things like checking available cars, rental prices, current revenues, billing details, and any other information about fleet |
+|---------|-------------|
+| **Fleet Management** | Add, delete, and view cars with categories and pricing |
+| **Date-Based Booking** | Rent cars with date picker, live price preview, and double-booking prevention |
+| **One-Click Return** | Return any active rental instantly |
+| **Rental History** | Complete record of active and completed rentals |
+| **PDF Receipts** | Professional PDF receipt for every booking via iText |
+| **Revenue Charts** | Monthly revenue bar chart + category doughnut chart via Chart.js |
+| **CSV Export** | Download complete rental history as CSV |
+
+### Advanced Features
+| Feature | Description |
+|---------|-------------|
+| **Customer Profiles** | Search customers by phone, view full rental history with stats |
+| **Customer Ratings** | Rate returned rentals (1-5 stars), average rating per car |
+| **Loyalty Discounts** | 3 rentals → 5% off, 5 rentals → 10% off, 10+ rentals → 15% off |
+| **Activity Log** | Track all actions — add/delete/rent/return with timestamps |
+| **Booking Notes** | Add special requests when renting (baby seat, preferred color, etc.) |
+| **Dashboard Insights** | Most rented car, top customer, busiest month, avg rental duration |
+| **Print Agreement** | Print-friendly rental agreement with full terms and conditions |
+| **AI Assistant** | Intelligent chatbot that knows everything about the fleet and system |
+| **Dark/Light Theme** | Toggle between dark and light mode with persistence |
 
 ---
 
-##  Tech Stack
+## Tech Stack
 
 ### Backend
-- **Java 17** — Core programming language
-- **Spring Boot 3.2.5** — Web framework + dependency injection
-- **Spring Data JPA** — Database ORM layer
-- **H2 Database** — Embedded persistent SQL database
-- **iText PDF 5** — PDF receipt generation
+| Technology | Purpose |
+|------------|---------|
+| Java 17 | Core programming language |
+| Spring Boot 3.2.5 | Web framework + dependency injection |
+| Spring Data JPA | Database ORM layer |
+| H2 Database | Embedded persistent SQL database |
+| iText PDF 5 | PDF receipt generation |
+| Maven | Build and dependency management |
 
 ### Frontend
-- **Thymeleaf** — Server-side HTML templating
-- **HTML5 + CSS3** — Mobile-first responsive design
-- **Vanilla JavaScript** — Live price preview, date validation
-- **Chart.js** — Interactive revenue and category charts
+| Technology | Purpose |
+|------------|---------|
+| Thymeleaf | Server-side HTML templating |
+| HTML5 + CSS3 | Mobile-first responsive design |
+| Vanilla JavaScript | Dynamic interactions, price preview |
+| Chart.js | Interactive revenue and category charts |
+| Marked.js | Markdown rendering in AI chatbot |
+| KaTeX | LaTeX math rendering in AI chatbot |
 
-### Tools & Deployment
-- **Maven** — Dependency management and build tool
-- **Git + GitHub** — Version control
-- **Railway.app** — Cloud deployment (CI/CD from GitHub)
-
----
-
-##  Project Architecture
-
-```
-AutoRentWeb/
-├── src/main/java/carrental/
-│   ├── App.java                         ← Spring Boot entry point
-│   ├── model/
-│   │   ├── Car.java                     ← JPA entity
-│   │   ├── Customer.java                ← JPA entity
-│   │   └── Rental.java                  ← JPA entity with date fields
-│   ├── repository/
-│   │   ├── CarRepository.java           ← Spring Data JPA
-│   │   ├── CustomerRepository.java      ← Spring Data JPA
-│   │   └── RentalRepository.java        ← Custom overlap query
-│   ├── service/
-│   │   ├── CarRentalSystem.java         ← Business logic layer
-│   │   └── PdfService.java              ← PDF generation with iText
-│   └──controller/
-        |-chat controller.java         <- AI Assistant controll
-│       └──RentalController.java       ← HTTP routes + request handling
-└── src/main/resources/
-    ├── templates/                        ← Thymeleaf HTML pages
-    │   ├── layout.html                  ← Shared navbar + footer
-    │   ├── dashboard.html
-    │   ├── rent.html
-    │   ├── rent-success.html
-    │   ├── return.html
-    │   ├── return-success.html
-    │   ├── history.html
-    │   ├── charts.html
-    │   └── cars.html
-    ├── static/
-    │   ├── css/style.css                ← Mobile-first dark theme
-    │   └── js/app.js                    ← Date logic + price preview
-    └── application.properties           ← DB + server config
-```
-
-### Design Pattern
-This project follows a clean **3-layer architecture**:
-```
-Controller (HTTP) → Service (Business Logic) → Repository (Database)
-```
+### Deployment
+| Platform | Method |
+|----------|--------|
+| Render | Auto-deploy from GitHub (via `render.yaml`) |
+| Railway | Alternative deployment option |
 
 ---
 
-##  Getting Started
+## Data Model
+
+```mermaid
+erDiagram
+    CAR {
+        string car_id PK
+        string brand
+        string model
+        double base_price_per_day
+        string category
+        boolean available
+    }
+    
+    CUSTOMER {
+        long id PK
+        string customer_id
+        string name
+        string phone
+        int rental_count
+        double loyalty_discount
+    }
+    
+    RENTAL {
+        long id PK
+        string car_id FK
+        long customer_id FK
+        date start_date
+        date end_date
+        int days
+        double total_price
+        string status "ACTIVE | RETURNED"
+        int rating
+        string notes
+    }
+    
+    ACTIVITY_LOG {
+        long id PK
+        string action
+        string description
+        timestamp created_at
+    }
+    
+    CAR ||--o{ RENTAL : "rented in"
+    CUSTOMER ||--o{ RENTAL : "rented by"
+```
+
+---
+
+## Quick Start
 
 ### Prerequisites
-| Tool | Version | Download |
-|---|---|---|
-| Java JDK | 17+ | https://adoptium.net |
-| Maven | 3.8+ | https://maven.apache.org |
+- **Java 17+** ([Download](https://adoptium.net))
+- **Maven 3.8+** ([Download](https://maven.apache.org))
 
 ### Run Locally
 ```bash
 # Clone the repository
-git clone https://github.com/bikash-20/rental-car-java-project.git
-cd rental-car-java-project
+git clone https://github.com/bikash-20/2nd-year-java-project.git
+cd 2nd-year-java-project
 
 # Run the application
 mvn spring-boot:run
+
+# Open in browser
+open http://localhost:8081
 ```
 
-Open your browser → **http://localhost:8080**
-
-### Build JAR
+### Build & Run JAR
 ```bash
-mvn package
+mvn clean package
 java -jar target/AutoRentWeb-1.0.jar
 ```
 
+### Environment Variables
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `PORT` | `8081` | Server port |
+| `OPENROUTER_API_KEY` | — | API key for AI chatbot (optional, free models used otherwise) |
+
 ---
 
-##  Screenshots
+## API Endpoints
 
-### Dashboard
-> Live fleet overview with stat cards showing total cars, availability, and revenue
+### Pages
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/` | Dashboard with fleet overview and insights |
+| GET | `/rent` | Car rental form with date picker |
+| POST | `/rent` | Submit rental booking |
+| GET | `/return` | Car return page |
+| POST | `/return` | Submit car return |
+| GET | `/history` | Rental history |
+| GET | `/charts` | Revenue and category analytics |
+| GET | `/cars` | Fleet management |
+| POST | `/cars/add` | Add new car |
+| POST | `/cars/delete` | Remove car from fleet |
+| GET | `/customer` | Customer search |
+| GET | `/customer/profile?id=X` | Customer profile |
+| GET | `/activity` | System activity log |
+| GET | `/about` | Developer information |
+| GET | `/agreement/{id}` | Print-friendly rental agreement |
 
-### Rent a Car
-> Date-based booking with real-time price calculation and double-booking prevention
+### Data Endpoints
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/receipt/{id}` | Download PDF receipt |
+| GET | `/export/csv` | Download rental history as CSV |
+| POST | `/api/chat` | AI chatbot API |
 
-### PDF Receipt
-> Professionally designed PDF receipt downloadable after every booking
-
-### Revenue Charts
-> Monthly revenue bar chart and category-wise doughnut chart powered by Chart.js
-### AI ASSISTANT
 ---
 
-##  Project Evolution
+## Deployment to Render
 
-This project was built in stages to demonstrate progressive learning:
+### Automatic (via render.yaml)
+1. Push your code to GitHub
+2. In Render Dashboard → New → Blueprint
+3. Connect your GitHub repository
+4. Render auto-detects `render.yaml` and deploys
+
+### Manual Setup
+1. Create a **Web Service** on Render
+2. Connect your GitHub repo
+3. Set:
+   - **Build Command:** `mvn clean package -DskipTests`
+   - **Start Command:** `java -jar target/AutoRentWeb-1.0.jar`
+   - **Auto-Deploy:** Yes
+4. Add Environment Variable: `PORT = 8080`
+
+## CI/CD Pipeline
+
+```mermaid
+graph LR
+    A[Git Push] --> B[GitHub]
+    B --> C[Render Webhook]
+    C --> D[Build: mvn package]
+    D --> E[Test: mvn test]
+    E --> F[Deploy to Render]
+    F --> G[Health Check /]
+    G --> H[Live!]
+```
+
+Every push to the `main` branch triggers automatic build, test, and deployment.
+
+---
+
+## AI Assistant
+
+The built-in AI chatbot uses OpenRouter's free LLM models with automatic fallback:
+1. **Meta Llama 3.3 70B** (primary)
+2. **OpenRouter Free** (fallback)
+3. **Google Gemma 2 9B** (secondary fallback)
+4. **Meta Llama 3.2 3B** (last resort)
+
+The AI has **live access** to the entire database — fleet, pricing, rentals, revenue, customer ratings, and loyalty tiers. It can answer questions about:
+- Available cars and pricing
+- Revenue and business insights
+- Customer rental history
+- Loyalty discounts
+- Feature guidance and troubleshooting
+
+---
+
+## Project Structure
 
 ```
-Stage 1 — Console App          Basic Java OOP, Scanner input
-      ↓
-Stage 2 — JavaFX Desktop App   GUI with dark theme, CSS styling
-      ↓
-Stage 3 — Spring Boot Web App  Full-stack, REST routes, Thymeleaf
-      ↓
-Stage 4 — Database + Features  JPA persistence, PDF, Charts, Date booking
+Rentify/
+├── render.yaml                    # Render deployment config
+├── Procfile                        # Process definition
+├── pom.xml                         # Maven build
+├── README.md                       # This file
+├── src/
+│   ├── main/
+│   │   ├── java/carrental/
+│   │   │   ├── App.java            # Entry point
+│   │   │   ├── model/              # JPA entities
+│   │   │   ├── repository/         # Data access layer
+│   │   │   ├── service/            # Business logic
+│   │   │   └── controller/         # HTTP routes
+│   │   └── resources/
+│   │       ├── templates/          # Thymeleaf pages
+│   │       ├── static/             # CSS, JS, images
+│   │       └── application.properties
+│   └── test/
+└── target/                         # Build output
 ```
 
 ---
 
-##  Future Enhancements
-
-- [ ] User authentication (Admin + Customer login)
-- [ ] Email confirmation on booking
-- [ ] PostgreSQL for production database
-- [ ] Android mobile application
-- [ ] Car photo uploads
-- [ ] Discount and coupon system
-
----
-
-##  Author
-
-<div align="center">
+## Author
 
 **Bikash Talukder**
+Second Year Computer Science & Engineering Student
 
-2nd Year Computer Science Student
+- [LinkedIn](https://www.linkedin.com/in/bikash-talukder-6497633b8/)
+- [GitHub](https://github.com/bikash-20)
 
-[![GitHub](https://img.shields.io/badge/GitHub-bikash--20-black?style=for-the-badge&logo=github)](https://github.com/bikash-20)
-
-</div>
+Built with Java + Spring Boot
 
 ---
 
-<div align="center">
+## License
 
-** If you found this project useful, please give it a star on GitHub!**
+This project is licensed under the MIT License — see the LICENSE file for details.
 
-*Built with  using Java + Spring Boot*
+---
 
-</div>
+*If you found this project useful, please give it a star on GitHub!*

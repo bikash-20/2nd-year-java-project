@@ -4,7 +4,7 @@
 <body>
 <div th:fragment="content">
     <div class="success-page">
-        <div class="success-icon">🎉</div>
+        <div class="success-icon"></div>
         <h1 class="success-title">Booking Confirmed!</h1>
         <p class="success-sub">Your car has been successfully booked.</p>
 
@@ -38,6 +38,10 @@
                 <span>Days</span>
                 <span th:text="${rental.days}">3</span>
             </div>
+            <div class="receipt-row" th:if="${rental.notes != null and !rental.notes.isEmpty()}">
+                <span>Special Requests</span>
+                <span class="notes-preview" th:text="${rental.notes}">Baby seat needed</span>
+            </div>
             <div class="receipt-row total-row">
                 <span>Total Amount</span>
                 <span th:text="'$' + ${#numbers.formatDecimal(rental.totalPrice, 1, 2)}">$180.00</span>
@@ -48,7 +52,7 @@
             <a href="/" class="btn btn-secondary">← Dashboard</a>
             <a th:if="${rental != null and rental.id != null}"
                th:href="@{/receipt/{id}(id=${rental.id})}"
-               class="btn btn-primary">⬇ Download PDF</a>
+               class="btn btn-primary">Download PDF</a>
             <a href="/rent" class="btn btn-secondary">Rent Another</a>
         </div>
     </div>

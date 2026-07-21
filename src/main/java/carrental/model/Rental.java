@@ -44,6 +44,11 @@ public class Rental {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    private Integer rating; // 1-5 stars, nullable
+
+    @Column(length = 500)
+    private String notes; // Special requests / booking notes
+
     public Rental() {
     }
 
@@ -109,5 +114,18 @@ public class Rental {
     public void markReturned() {
         this.returnedAt = LocalDateTime.now();
         this.status = Status.RETURNED;
+    }
+
+    public Integer getRating() { return rating; }
+    public void setRating(Integer rating) { this.rating = rating; }
+
+    public void setTotalPrice(double totalPrice) { this.totalPrice = totalPrice; }
+
+    public String getNotes() { return notes; }
+    public void setNotes(String notes) { this.notes = notes; }
+
+    public String getNotesPreview() {
+        if (notes == null || notes.isBlank()) return "";
+        return notes.length() > 40 ? notes.substring(0, 40) + "…" : notes;
     }
 }

@@ -8,6 +8,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <!-- KaTeX for LaTeX rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <!-- marked.js for Markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+    <!-- DOMPurify for safe HTML -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
 </head>
 
 <body>
@@ -21,7 +28,11 @@
                 <a href="/history" class="nav-link" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/history' ? 'active' : ''}">History</a>
                 <a href="/charts" class="nav-link" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/charts' ? 'active' : ''}">Charts</a>
                 <a href="/cars" class="nav-link" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/cars' ? 'active' : ''}">Manage</a>
-        <a href="#" class="nav-link" onclick="toggleChatbot(); return false;">✨ AI Assistant</a>
+                <a href="/customer" class="nav-link" th:classappend="${#httpServletRequest != null and (#httpServletRequest.requestURI == '/customer' or #httpServletRequest.requestURI == '/customer/profile' or #httpServletRequest.requestURI == '/customer/search') ? 'active' : ''}">Customers</a>
+                <a href="/activity" class="nav-link" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/activity' ? 'active' : ''}">Activity</a>
+                <a href="/about" class="nav-link" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/about' ? 'active' : ''}">About</a>
+        <a href="#" class="nav-link" onclick="toggleChatbot(); return false;">AI Assistant</a>
+        <button id="theme-toggle" class="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">&#9681;</button>
     </div>
 </nav>
 
@@ -34,22 +45,47 @@
     </footer>
     <script th:src="@{/js/app.js}"></script>
     <!-- Floating Chat Toggle Button -->
-    <button id="chatbot-toggle-btn" onclick="toggleChatbot()" style="position:fixed; bottom:20px; right:20px; width:60px; height:60px; border-radius:50%; background:#2c3e50; color:#fff; border:none; box-shadow:0 4px 12px rgba(0,0,0,0.3); font-size:28px; cursor:pointer; z-index:999; display:flex; align-items:center; justify-content:center; transition: transform 0.2s;">
-        💬
-    </button>
+    <button id="chatbot-toggle-btn" onclick="toggleChatbot()" aria-label="Open AI Assistant"></button>
 
-    <!-- Chatbot modal -->
-    <div id="chatbot-modal" class="chatbot-modal" style="display:none; position:fixed; bottom:20px; right:20px; width:350px; max-width:calc(100vw - 40px); height:500px; max-height:calc(100vh - 100px); background:#fff; border:1px solid #ccc; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.2); overflow:hidden; z-index:1000; flex-direction:column;">
-        <div style="background:#2c3e50; color:#fff; padding:12px 16px; cursor:pointer; font-weight:600; display:flex; justify-content:space-between; align-items:center;" onclick="toggleChatbot()">
-            <span>✨ AI Assistant</span>
-            <span style="font-size:18px;">✕</span>
+    <!-- Chatbot Modal -->
+    <div id="chatbot-modal" class="chatbot-modal">
+        <!-- Header with gradient -->
+        <div class="chatbot-header" onclick="toggleChatbot()">
+            <div class="chatbot-header-left">
+                <div>
+                    <span class="chatbot-title">Rentify AI</span>
+                    <span class="chatbot-status">● Online</span>
+                </div>
+            </div>
+            <button class="chatbot-close" onclick="event.stopPropagation(); toggleChatbot();">✕</button>
         </div>
-        <div id="chatbot-body" style="padding:12px; overflow-y:auto; flex-grow:1; font-family:Arial, sans-serif; font-size:14px;">
-            <!-- messages will be appended here -->
+
+        <!-- Messages area -->
+        <div id="chatbot-body" class="chatbot-body">
+            <!-- Welcome message -->
+            <div class="chatbot-welcome">
+                <div class="welcome-text">
+                    <strong>Welcome to Rentify AI!</strong>
+                </div>
+                <div class="welcome-hints">
+                    <span class="hint-chip" onclick="quickAsk('What cars are available?')">Available Cars</span>
+                    <span class="hint-chip" onclick="quickAsk('Show me the pricing')">Pricing</span>
+                    <span class="hint-chip" onclick="quickAsk('What is the total revenue?')">Revenue</span>
+                    <span class="hint-chip" onclick="quickAsk('How does ratings work?')">Ratings</span>
+                </div>
+            </div>
         </div>
-        <div style="display:flex; border-top:1px solid #eee;">
-            <input id="chatbot-input" type="text" placeholder="Ask a question..." style="flex:1; border:none; padding:8px;" onkeydown="if(event.key==='Enter') sendMessage();" />
-            <button onclick="sendMessage()" style="border:none; background:#2c3e50; color:#fff; padding:0 12px;">Send</button>
+
+        <!-- Input area -->
+        <div class="chatbot-input-area">
+            <input id="chatbot-input" type="text" placeholder="Ask anything about Rentify..."
+                   onkeydown="if(event.key==='Enter') sendMessage();" />
+            <button onclick="sendMessage()" id="chatbot-send-btn" aria-label="Send">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
         </div>
     </div>
 

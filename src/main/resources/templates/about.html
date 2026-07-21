@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('About', ~{::content})}">
+<body>
+<div th:fragment="content">
+
+    <div class="page-header">
+        <h1 class="page-title">About</h1>
+        <p class="page-sub">Developer information and project details</p>
+    </div>
+
+    <div class="about-layout">
+        <div class="card about-profile-card">
+            <div class="about-profile">
+                <div class="about-avatar-frame">
+                    <img src="/images/developer.png" alt="Bikash Talukder" class="about-photo" loading="lazy"
+                         onerror="imgFallback(this)" />
+                </div>
+                <div class="about-info">
+                    <h2 class="about-name">Bikash Talukder</h2>
+                    <p class="about-role">Second Year Computer Science & Engineering Student</p>
+                    <div class="about-links">
+                        <a href="https://www.linkedin.com/in/bikash-talukder-6497633b8/" target="_blank" class="btn btn-sm btn-secondary">LinkedIn</a>
+                        <a href="https://github.com/bikash-20" target="_blank" class="btn btn-sm btn-secondary">GitHub</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">About Rentify</h2>
+            <p style="color:var(--muted); line-height:1.8; margin-top:12px;">
+                Rentify is a full-stack Car Rental Management System built as a 2nd-year Java project.
+                It evolved from a basic console application into a production-ready web application
+                demonstrating real-world software development skills including layered architecture,
+                database persistence, PDF generation, and data visualization.
+            </p>
+            <p style="color:var(--muted); line-height:1.8; margin-top:12px;">
+                <strong>Tech Stack:</strong> Java 17, Spring Boot 3.2.5, Spring Data JPA, H2 Database,
+                Thymeleaf, Chart.js, iText PDF, and integrated AI assistant powered by OpenRouter.
+            </p>
+            <p style="color:var(--muted); line-height:1.8; margin-top:12px;">
+                <strong>Features:</strong> Fleet management, date-based booking with double-booking prevention,
+                PDF receipts, revenue charts, customer profiles, activity logging, loyalty discounts,
+                and an AI chatbot that knows everything about the system.
+            </p>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

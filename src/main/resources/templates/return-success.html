@@ -5,7 +5,7 @@
 <div th:fragment="content">
 
     <div class="success-page">
-        <div class="success-icon">✅</div>
+        <div class="success-icon"></div>
         <h1 class="success-title">Car Returned!</h1>
         <p class="success-sub">The car has been successfully returned.</p>
 
@@ -31,6 +31,32 @@
                 <span>Returned At</span>
                 <span th:text="${rental.returnedAtStr}">01 Jan 2025</span>
             </div>
+        </div>
+
+        <!-- Rating Section -->
+        <div class="card" style="margin-top:20px">
+            <h3 class="card-title">Rate Your Experience</h3>
+            <p style="color:var(--muted); font-size:13px; margin:8px 0 16px;">
+                How was your experience with this car?
+            </p>
+            <form action="/rate" method="post" class="rating-form">
+                <input type="hidden" name="rentalId" th:value="${rental.id}" />
+                <div class="star-rating-input">
+                    <input type="radio" id="star5" name="rating" value="5" required />
+                    <label for="star5" title="5 stars">★</label>
+                    <input type="radio" id="star4" name="rating" value="4" />
+                    <label for="star4" title="4 stars">★</label>
+                    <input type="radio" id="star3" name="rating" value="3" />
+                    <label for="star3" title="3 stars">★</label>
+                    <input type="radio" id="star2" name="rating" value="2" />
+                    <label for="star2" title="2 stars">★</label>
+                    <input type="radio" id="star1" name="rating" value="1" />
+                    <label for="star1" title="1 star">★</label>
+                </div>
+                <button type="submit" class="btn btn-primary" style="margin-top:12px">
+                    Submit Rating
+                </button>
+            </form>
         </div>
 
         <div class="btn-row center">

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Activity Log', ~{::content})}">
+<body>
+<div th:fragment="content">
+
+    <div class="page-header">
+        <h1 class="page-title">Activity Log</h1>
+        <p class="page-sub">Track all actions performed in the system — add, delete, rent, return</p>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Recent Activity
+                <span class="badge cat" th:text="${#lists.size(activities)} + ' entry(s)'">0 entries</span>
+            </h2>
+        </div>
+
+        <div th:if="${#lists.isEmpty(activities)}" class="empty-state" style="margin-top:8px;">
+            <div class="empty-icon"></div>
+            <h3>No Activity Yet</h3>
+            <p>Activities will appear here when cars are added, deleted, rented, or returned.</p>
+        </div>
+
+        <div th:unless="${#lists.isEmpty(activities)}" class="activity-timeline" style="margin-top:12px;">
+            <div th:each="a : ${activities}" class="activity-entry">
+                <div class="activity-icon" th:text="${a.actionIcon}">➕</div>
+                <div class="activity-body">
+                    <div class="activity-header">
+                        <span class="activity-action" th:text="${a.actionLabel}">Car Added</span>
+                        <span class="activity-time" th:text="${a.timestampStr}">01 Jan 2025 14:30</span>
+                    </div>
+                    <div class="activity-desc" th:text="${a.description}">Added Toyota Camry (C007) to fleet</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

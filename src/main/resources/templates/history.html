@@ -9,6 +9,9 @@
         <p class="page-sub"
            th:text="'Total: ' + ${totalCount} + ' transactions  ·  Revenue: $' + ${#numbers.formatDecimal(totalRevenue,1,2)}">
         </p>
+        <div style="margin-top:12px; display:flex; gap:8px;">
+            <a href="/export/csv" class="btn btn-primary btn-sm">Export CSV</a>
+        </div>
     </div>
 
     <!-- Active Rentals -->
@@ -17,12 +20,12 @@
             <h2 class="card-title">Active Rentals
                 <span class="badge rented" th:text="${#lists.size(activeRentals)}">0</span>
             </h2>
-            <a href="/charts" class="btn btn-secondary btn-sm">📊 View Charts</a>
+            <a href="/charts" class="btn btn-secondary btn-sm">View Charts</a>
         </div>
         <div class="table-wrap">
             <table class="table" th:if="${!#lists.isEmpty(activeRentals)}">
                 <thead>
-                    <tr><th>Car</th><th>Customer</th><th>Start</th><th>End</th><th>Days</th><th>Total</th><th>Receipt</th></tr>
+                    <tr><th>Car</th><th>Customer</th><th>Start</th><th>End</th><th>Days</th><th>Total</th><th>Notes</th><th>Receipt</th></tr>
                 </thead>
                 <tbody>
                     <tr th:each="r : ${activeRentals}">
@@ -32,6 +35,11 @@
                         <td th:text="${r.endDateStr}">04 Jan</td>
                         <td th:text="${r.days}">3</td>
                         <td th:text="'$' + ${#numbers.formatDecimal(r.totalPrice,1,2)}">$180</td>
+                        <td>
+                            <span th:if="${r.notes != null and !r.notes.isEmpty()}" class="notes-preview"
+                                  th:title="${r.notes}" th:text="${r.notesPreview}">Baby seat</span>
+                            <span th:unless="${r.notes != null and !r.notes.isEmpty()}" class="hint-text">—</span>
+                        </td>
                         <td>
                             <a th:href="@{/receipt/{id}(id=${r.id})}"
                                class="btn btn-xs btn-primary">⬇ PDF</a>
@@ -51,7 +59,7 @@
         <div class="table-wrap" style="margin-top:14px">
             <table class="table" th:if="${!#lists.isEmpty(returnedRentals)}">
                 <thead>
-                    <tr><th>Car</th><th>Customer</th><th>Start</th><th>End</th><th>Days</th><th>Total</th><th>Receipt</th></tr>
+                    <tr><th>Car</th><th>Customer</th><th>Start</th><th>End</th><th>Days</th><th>Total</th><th>Notes</th><th>Rating</th><th>Receipt</th></tr>
                 </thead>
                 <tbody>
                     <tr th:each="r : ${returnedRentals}">
@@ -61,6 +69,20 @@
                         <td th:text="${r.endDateStr}">04 Jan</td>
                         <td th:text="${r.days}">3</td>
                         <td th:text="'$' + ${#numbers.formatDecimal(r.totalPrice,1,2)}">$180</td>
+                        <td>
+                            <span th:if="${r.notes != null and !r.notes.isEmpty()}" class="notes-preview"
+                                  th:title="${r.notes}" th:text="${r.notesPreview}">Baby seat</span>
+                            <span th:unless="${r.notes != null and !r.notes.isEmpty()}" class="hint-text">—</span>
+                        </td>
+                        <td>
+                            <span th:if="${r.rating != null}" class="stars-display">
+                                <span th:each="i : ${#numbers.sequence(1, 5)}">
+                                    <span th:if="${i <= r.rating}" class="star filled">★</span>
+                                    <span th:unless="${i <= r.rating}" class="star empty">★</span>
+                                </span>
+                            </span>
+                            <span th:unless="${r.rating != null}" class="hint-text">—</span>
+                        </td>
                         <td>
                             <a th:href="@{/receipt/{id}(id=${r.id})}"
                                class="btn btn-xs btn-secondary">⬇ PDF</a>

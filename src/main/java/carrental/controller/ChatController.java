@@ -16,6 +16,7 @@ import java.util.Comparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import carrental.repository.CarRepository;
 import carrental.repository.RentalRepository;
+import carrental.service.CarRentalSystem;
 import carrental.model.Car;
 import carrental.model.Rental;
 
@@ -31,6 +32,9 @@ public class ChatController {
 
     @Autowired
     private RentalRepository rentalRepository;
+
+    @Autowired
+    private CarRentalSystem carRentalSystem;
 
     private static final String OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 
@@ -241,7 +245,87 @@ public class ChatController {
                     .append(" | ").append(r.getDays()).append(" day(s)")
                     .append(" | Total: $").append(fmt(r.getTotalPrice()))
                     .append(" | Status: ").append(r.getStatus())
+                    .append(" | Notes: ").append(r.getNotes() != null && !r.getNotes().isBlank() ? r.getNotes() : "None")
                     .append("\n");
+        }
+        sb.append("\n");
+
+        // --- Dashboard insights ---
+        try {
+            java.util.Map<String, Object> insights = carRentalSystem.getDashboardInsights();
+            sb.append("DASHBOARD INSIGHTS:\n");
+            sb.append("- Most Rented Car: ").append(insights.get("mostRentedCar"))
+                    .append(" (").append(insights.get("mostRentedCount")).append(" rentals)\n");
+            sb.append("- Top Customer: ").append(insights.get("topCustomer"))
+                    .append(" (").append(insights.get("topCustomerRentals")).append(" rentals)\n");
+            sb.append("- Busiest Month: ").append(insights.get("busiestMonth"))
+                    .append(" ($").append(fmt((Double) insights.get("busiestMonthRevenue"))).append(")\n");
+            sb.append("- Average Rental Duration: ").append(insights.get("avgRentalDays")).append(" days\n");
+            sb.append("- Total Unique Customers: ").append(insights.get("totalCustomers")).append("\n");
+            sb.append("\n");
+        } catch (Exception e) {
+            // silently skip insights if unavailable
+        }
+
+        // --- Customer ratings ---
+        try {
+            java.util.Map<String, Double> carRatings = carRentalSystem.getAllCarRatings();
+            sb.append("CAR RATINGS:\n");
+            if (carRatings.isEmpty()) {
+                sb.append("  (no ratings yet)\n");
+            }
+            for (java.util.Map.Entry<String, Double> entry : carRatings.entrySet()) {
+                sb.append("  * Car ").append(entry.getKey())
+                        .append(": ").append(entry.getValue()).append(" / 5.0 stars\n");
+            }
+            sb.append("\n");
+        } catch (Exception e) {
+            // silently skip ratings if unavailable
+        }
+
+        // --- Available features (for feature questions) ---
+        sb.append("AVAILABLE FEATURES YOU CAN HELP WITH:\n");
+        sb.append("- Dashboard: View fleet stats, revenue, and insights\n");
+        sb.append("- Rent a Car: Date-based booking with live price preview and double-booking prevention\n");
+        sb.append("- Return a Car: One-click return of any active rental\n");
+        sb.append("- Rental History: Full record of active and completed rentals\n");
+        sb.append("- PDF Receipts: Download professional PDF receipt for any booking\n");
+        sb.append("- Revenue Charts: Monthly revenue bar chart + category doughnut chart\n");
+        sb.append("- Manage Fleet: Add new cars or delete existing ones from the UI\n");
+        sb.append("- Customer Ratings: Rate returned rentals from 1-5 stars; view average rating per car\n");
+        sb.append("- Dashboard Insights: See most rented car, top customer, busiest month, and avg rental duration\n");
+        sb.append("- CSV Export: Download complete rental history as a CSV file\n");
+        sb.append("- Booking Notes: Customers can add special requests (e.g. baby seat, preferred color) when renting\n");
+        sb.append("- Customer Profiles: Search customers by phone number and view their complete rental history, stats, and ratings\n");
+        sb.append("- Activity Log: Track all actions performed in the system — car added, deleted, rented, returned with timestamps\n");
+        sb.append("- Loyalty Discounts: Returning customers get 5% off after 3 rentals, 10% off after 5, 15% off after 10\n");
+        sb.append("- Rental Agreement: View printable rental agreement with full terms and conditions\n");
+        sb.append("- About Page: Developer info for Bikash Talukder — LinkedIn and GitHub profiles\n");
+        sb.append("- Theme Toggle: Switch between dark and light mode from the navigation bar\n");
+        sb.append("- AI Assistant: Ask questions about any of the above features\n");
+
+        // --- Loyalty info for returning customers ---
+        try {
+            Map<String, Integer> customerRentalCounts = new HashMap<>();
+            for (Rental r : allRentals) {
+                if (r.getCustomer() != null) {
+                    String name = r.getCustomer().getName();
+                    customerRentalCounts.merge(name != null ? name : "Unknown", 1, Integer::sum);
+                }
+            }
+            sb.append("CUSTOMER LOYALTY TIERS:\n");
+            if (customerRentalCounts.isEmpty()) {
+                sb.append("  (no customers yet)\n");
+            }
+            for (Map.Entry<String, Integer> entry : customerRentalCounts.entrySet()) {
+                int count = entry.getValue();
+                String discount = count >= 10 ? "15%" : count >= 5 ? "10%" : count >= 3 ? "5%" : "0%";
+                sb.append("  * ").append(entry.getKey()).append(": ").append(count)
+                        .append(" rental(s) — Loyalty Discount: ").append(discount).append("\n");
+            }
+            sb.append("\n");
+        } catch (Exception e) {
+            // silently skip
         }
 
         return sb.toString();

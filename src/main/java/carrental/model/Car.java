@@ -14,6 +14,7 @@ public class Car {
     private String model;
     private double basePricePerDay;
     private String category;
+    private String imageUrl;
     private boolean available = true;
 
     public Car() {}
@@ -25,6 +26,7 @@ public class Car {
         this.basePricePerDay = basePricePerDay;
         this.category = category;
         this.available = true;
+        this.imageUrl = "https://picsum.photos/seed/" + carId + "/300/200";
     }
 
     public String getCarId()           { return carId; }
@@ -39,6 +41,9 @@ public class Car {
     public void   setCategory(String v){ this.category = v; }
     public boolean isAvailable()       { return available; }
     public void    setAvailable(boolean v){ this.available = v; }
+
+    public String getImageUrl()      { return imageUrl; }
+    public void   setImageUrl(String v) { this.imageUrl = v; }
 
     public double calculatePrice(int days) { return basePricePerDay * days; }
     public void rent()      { available = false; }

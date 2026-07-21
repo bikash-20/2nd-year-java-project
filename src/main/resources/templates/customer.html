@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Customers', ~{::content})}">
+<body>
+<div th:fragment="content">
+
+    <div class="page-header">
+        <h1 class="page-title">Customer Profile</h1>
+        <p class="page-sub">Search customers by phone number to view their rental history</p>
+    </div>
+
+    <!-- Search form -->
+    <div class="card">
+        <form action="/customer/search" method="post" class="customer-search-form">
+            <div class="customer-search-row">
+                <div class="field" style="flex:1; margin-bottom:0;">
+                    <label>Search by Phone Number</label>
+                    <input type="text" name="phone"
+                           placeholder="e.g. +91 98765 43210 or just 98765"
+                           th:value="${searchPhone != null ? searchPhone : ''}"
+                           required />
+                </div>
+                <button type="submit" class="btn btn-primary" style="margin-top:24px;">Search</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Search results -->
+    <div th:if="${searchResults != null}" class="card" style="margin-top:20px;">
+        <h2 class="card-title">
+            Search Results
+            <span class="badge cat" th:text="${#lists.size(searchResults)} + ' found'">0 found</span>
+        </h2>
+        <div th:if="${#lists.isEmpty(searchResults)}" class="empty-msg">
+            No customers found with that phone number.
+        </div>
+        <div th:unless="${#lists.isEmpty(searchResults)}" class="customer-results">
+            <a th:each="c : ${searchResults}"
+               th:href="@{/customer/profile(id=${c.id})}"
+               class="customer-result-item">
+                <div class="customer-result-icon"></div>
+                <div class="customer-result-info">
+                    <span class="customer-result-name" th:text="${c.name}">Bikash Talukder</span>
+                    <span class="customer-result-meta" th:text="${c.customerId} + ' · ' + ${c.phone}">CUS001 · +91 98765</span>
+                </div>
+                <span class="customer-result-arrow">→</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Customer Profile -->
+    <div th:if="${profile != null}" class="profile-section" style="margin-top:24px;">
+
+        <div class="card profile-header-card">
+            <div class="profile-header">
+                <div class="profile-avatar"></div>
+                <div class="profile-info">
+                    <h2 class="profile-name" th:text="${profile.name}">Bikash Talukder</h2>
+                    <p class="profile-meta">
+                        <span th:text="${profile.customerId}">CUS001</span>
+                        <span class="profile-sep">·</span>
+                        <span th:text="${profile.phone}">+91 98765 43210</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stat-grid" style="margin-top:8px;">
+            <div class="stat-card blue">
+                <div class="stat-label">Total Rentals</div>
+                <div class="stat-value" th:text="${summary.totalRentals}">0</div>
+            </div>
+            <div class="stat-card amber">
+                <div class="stat-label">Active</div>
+                <div class="stat-value" th:text="${summary.activeRentals}">0</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-label">Returned</div>
+                <div class="stat-value" th:text="${summary.returnedRentals}">0</div>
+            </div>
+            <div class="stat-card purple">
+                <div class="stat-label">Total Spent</div>
+                <div class="stat-value" style="font-size:24px;" th:text="'$' + ${#numbers.formatDecimal(summary.totalSpent,1,2)}">$0</div>
+            </div>
+        </div>
+
+        <!-- Rental History -->
+        <div class="card" style="margin-top:16px;">
+            <h2 class="card-title">Rental History
+                <span class="badge cat" th:text="${#lists.size(rentals)} + ' rental(s)'">3 rentals</span>
+            </h2>
+            <div class="table-wrap" style="margin-top:14px;">
+                <table class="table" th:if="${!#lists.isEmpty(rentals)}">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Car</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Days</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Rating</th>
+                            <th>Receipt</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="r : ${rentals}">
+                            <td class="mono" th:text="${r.id}">1</td>
+                            <td th:text="${r.car.brand} + ' ' + ${r.car.model}">Toyota Camry</td>
+                            <td th:text="${r.startDateStr}">01 Jan</td>
+                            <td th:text="${r.endDateStr}">04 Jan</td>
+                            <td th:text="${r.days}">3</td>
+                            <td th:text="'$' + ${#numbers.formatDecimal(r.totalPrice,1,2)}">$180</td>
+                            <td>
+                                <span th:if="${r.status.name() == 'ACTIVE'}" class="badge rented">● Active</span>
+                                <span th:unless="${r.status.name() == 'ACTIVE'}" class="badge available">✓ Returned</span>
+                            </td>
+                            <td>
+                                <span th:if="${r.rating != null}" class="stars-display">
+                                    <span th:each="i : ${#numbers.sequence(1, 5)}">
+                                        <span th:if="${i <= r.rating}" class="star filled">★</span>
+                                        <span th:unless="${i <= r.rating}" class="star empty">★</span>
+                                    </span>
+                                </span>
+                                <span th:unless="${r.rating != null}" class="hint-text">—</span>
+                            </td>
+                            <td>
+                                <a th:href="@{/receipt/{id}(id=${r.id})}"
+                                   class="btn btn-xs btn-secondary">⬇ PDF</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p th:if="${#lists.isEmpty(rentals)}" class="empty-msg">No rental history for this customer.</p>
+            </div>
+        </div>
+
+        <div class="btn-row" style="margin-top:16px;">
+            <a href="/customer" class="btn btn-secondary">← New Search</a>
+        </div>
+
+    </div>
+
+</div>
+</body>
+</html>

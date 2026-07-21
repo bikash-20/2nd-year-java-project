@@ -1,0 +1,20 @@
+# Rentify — Render Deployment Configuration
+# Auto-deploys from GitHub on every push to main branch
+
+services:
+  - type: web
+    name: rentify
+    env: java
+    plan: free
+    buildCommand: mvn clean package -DskipTests
+    startCommand: java -jar target/AutoRentWeb-1.0.jar
+    healthCheckPath: /
+    autoDeploy: true
+    branch: main
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: SPRING_THYMELEAF_CACHE
+        value: "false"
+      - key: JAVA_HOME
+        value: /opt/render/projects/Java/openjdk-17

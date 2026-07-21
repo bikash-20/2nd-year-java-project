@@ -17,7 +17,7 @@
 
         <!-- ── Add Car Form ───────────────────────────────────────────────── -->
         <div class="card">
-            <h2 class="card-title">➕ Add New Car</h2>
+            <h2 class="card-title">Add New Car</h2>
 
             <form action="/cars/add" method="post" style="margin-top:20px">
 
@@ -59,14 +59,14 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-full" style="margin-top:8px">
-                    ➕ Add Car to Fleet
+                    Add Car to Fleet
                 </button>
             </form>
         </div>
 
         <!-- ── Current Fleet ─────────────────────────────────────────────── -->
         <div class="card">
-            <h2 class="card-title">🚗 Current Fleet
+            <h2 class="card-title">Current Fleet
                 <span class="badge cat" th:text="${#lists.size(cars)} + ' cars'">6 cars</span>
             </h2>
             <div class="table-wrap" style="margin-top:16px">
@@ -77,6 +77,7 @@
                             <th>Brand &amp; Model</th>
                             <th>Category</th>
                             <th>$/Day</th>
+                            <th>Rating</th>
                             <th>Status</th>
                             <th>Delete</th>
                         </tr>
@@ -88,6 +89,17 @@
                             <td><span class="badge cat" th:text="${car.category}">Sedan</span></td>
                             <td th:text="'$' + ${car.basePricePerDay}">$60</td>
                             <td>
+                                <span th:if="${carRatings.containsKey(car.carId)}" class="stars-display"
+                                      th:title="${carRatings.get(car.carId)} + ' / 5.0'">
+                                    <span th:each="i : ${#numbers.sequence(1, 5)}">
+                                        <span th:if="${i <= carRatings.get(car.carId)}" class="star filled">★</span>
+                                        <span th:unless="${i <= carRatings.get(car.carId)}" class="star empty">★</span>
+                                    </span>
+                                    <span class="rating-num" th:text="${carRatings.get(car.carId)}"></span>
+                                </span>
+                                <span th:unless="${carRatings.containsKey(car.carId)}" class="hint-text">No ratings</span>
+                            </td>
+                            <td>
                                 <span th:if="${car.available}"   class="badge available">✓ Available</span>
                                 <span th:unless="${car.available}" class="badge rented">● Rented</span>
                             </td>
@@ -95,7 +107,7 @@
                                 <form th:if="${car.available}" action="/cars/delete" method="post"
                                       onsubmit="return confirm('Delete this car permanently?')">
                                     <input type="hidden" name="carId" th:value="${car.carId}"/>
-                                    <button type="submit" class="btn btn-danger btn-xs">🗑 Delete</button>
+                                    <button type="submit" class="btn btn-danger btn-xs">Delete</button>
                                 </form>
                                 <span th:unless="${car.available}" class="hint-text">Rented — can't delete</span>
                             </td>

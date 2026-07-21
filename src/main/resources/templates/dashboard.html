@@ -29,12 +29,54 @@
         </div>
     </div>
 
+    <!-- Insights Section -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Business Insights</h2>
+            <span class="badge cat" th:text="'Updated live'">Live</span>
+        </div>
+        <div class="insights-grid">
+            <div class="insight-card">
+                <div class="insight-icon"></div>
+                <div class="insight-body">
+                    <span class="insight-label">Most Rented Car</span>
+                    <span class="insight-value" th:text="${insights.mostRentedCar}">Toyota Camry</span>
+                    <span class="insight-sub" th:text="${insights.mostRentedCount} + ' rental(s)'">12 rentals</span>
+                </div>
+            </div>
+            <div class="insight-card">
+                <div class="insight-icon"></div>
+                <div class="insight-body">
+                    <span class="insight-label">Top Customer</span>
+                    <span class="insight-value" th:text="${insights.topCustomer}">Bikash</span>
+                    <span class="insight-sub" th:text="${insights.topCustomerRentals} + ' rental(s)'">5 rentals</span>
+                </div>
+            </div>
+            <div class="insight-card">
+                <div class="insight-icon"></div>
+                <div class="insight-body">
+                    <span class="insight-label">Busiest Month</span>
+                    <span class="insight-value" th:text="${insights.busiestMonth}">Jan</span>
+                    <span class="insight-sub" th:text="'$' + ${#numbers.formatDecimal(insights.busiestMonthRevenue,1,2)}">$1,200</span>
+                </div>
+            </div>
+            <div class="insight-card">
+                <div class="insight-icon"></div>
+                <div class="insight-body">
+                    <span class="insight-label">Avg Rental Duration</span>
+                    <span class="insight-value" th:text="${insights.avgRentalDays} + ' days'">3.5 days</span>
+                    <span class="insight-sub" th:text="${insights.totalCustomers} + ' unique customer(s)'">8 customers</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Fleet Table -->
     <div class="card">
         <div class="card-header">
             <h2 class="card-title">Fleet Overview</h2>
             <div style="display:flex;gap:8px">
-                <a href="/cars"   class="btn btn-secondary btn-sm">⚙ Manage</a>
+                <a href="/cars"   class="btn btn-secondary btn-sm">Manage</a>
                 <a href="/rent"   class="btn btn-primary   btn-sm">+ Rent</a>
             </div>
         </div>
@@ -43,7 +85,7 @@
                 <thead>
                     <tr>
                         <th>ID</th><th>Brand</th><th>Model</th>
-                        <th>Category</th><th>$/Day</th><th>Status</th><th>Action</th>
+                        <th>Category</th><th>$/Day</th><th>Rating</th><th>Status</th><th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -53,6 +95,17 @@
                         <td th:text="${car.model}">Camry</td>
                         <td><span class="badge cat" th:text="${car.category}">Sedan</span></td>
                         <td th:text="'$' + ${car.basePricePerDay}">$60</td>
+                        <td>
+                            <span th:if="${carRatings.containsKey(car.carId)}" class="stars-display"
+                                  th:title="${carRatings.get(car.carId)} + ' / 5.0'">
+                                <span th:each="i : ${#numbers.sequence(1, 5)}">
+                                    <span th:if="${i <= carRatings.get(car.carId)}" class="star filled">★</span>
+                                    <span th:unless="${i <= carRatings.get(car.carId)}" class="star empty">★</span>
+                                </span>
+                                <span class="rating-num" th:text="${carRatings.get(car.carId)}"></span>
+                            </span>
+                            <span th:unless="${carRatings.containsKey(car.carId)}" class="hint-text">—</span>
+                        </td>
                         <td>
                             <span th:if="${car.available}"   class="badge available">✓ Available</span>
                             <span th:unless="${car.available}" class="badge rented">● Rented</span>
