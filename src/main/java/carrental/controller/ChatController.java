@@ -51,10 +51,14 @@ public class ChatController {
 
     // Ordered strongest-first. Weaker/smaller models are more likely to ignore
     // injected context and hallucinate numbers, so they are tried last.
+    // Updated 2026-07-29: many previously-free Llama/Gemma slugs are now paid-only
+    // on OpenRouter, so we lead with OpenRouter's own free-models router which
+    // auto-selects any model that is currently free, then fall back to two
+    // confirmed-free slugs.
     private static final String[] FALLBACK_MODELS = {
-            "meta-llama/llama-3.3-70b-instruct:free",
-            "google/gemma-2-9b-it:free",
-            "meta-llama/llama-3.2-3b-instruct:free"
+            "openrouter/free",
+            "inclusionai/ling-3.0-flash:free",
+            "poolside/laguna-xs-2.1:free"
     };
 
     // ── Bilingual system prompt (English + Bengali) ─────────────────────────
