@@ -58,6 +58,13 @@
                 </div>
             </div>
             <div style="display:flex;gap:6px;align-items:center">
+                <!-- Language toggle: EN / বাংলা -->
+                <div class="chatbot-lang-toggle" onclick="event.stopPropagation();">
+                    <button type="button" class="chatbot-lang-btn active" id="chatbot-lang-en"
+                            onclick="setChatLanguage('en')" aria-label="English">EN</button>
+                    <button type="button" class="chatbot-lang-btn" id="chatbot-lang-bn"
+                            onclick="setChatLanguage('bn')" aria-label="Bengali">বাংলা</button>
+                </div>
                 <button class="chatbot-maxbtn" onclick="event.stopPropagation(); toggleChatbotSize();" aria-label="Maximize">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="15 3 21 3 21 9"></polyline>
@@ -75,20 +82,31 @@
             <!-- Welcome message -->
             <div class="chatbot-welcome">
                 <div class="welcome-text">
-                    <strong>Welcome to Rentify AI!</strong>
+                    <strong data-lang="en">Welcome to Rentify AI!</strong>
+                    <strong data-lang="bn" style="display:none;">Rentify AI-তে স্বাগতম!</strong>
                 </div>
                 <div class="welcome-hints">
-                    <span class="hint-chip" onclick="quickAsk('What cars are available?')">Available Cars</span>
-                    <span class="hint-chip" onclick="quickAsk('Show me the pricing')">Pricing</span>
-                    <span class="hint-chip" onclick="quickAsk('What is the total revenue?')">Revenue</span>
-                    <span class="hint-chip" onclick="quickAsk('How does ratings work?')">Ratings</span>
+                    <span class="hint-chip" data-lang="en" onclick="quickAsk('What cars are available?')">Available Cars</span>
+                    <span class="hint-chip" data-lang="bn" style="display:none;" onclick="quickAsk('কোন কোন গাড়ি এখন পাওয়া যাচ্ছে?')">কোন গাড়ি আছে?</span>
+
+                    <span class="hint-chip" data-lang="en" onclick="quickAsk('Show me the pricing')">Pricing</span>
+                    <span class="hint-chip" data-lang="bn" style="display:none;" onclick="quickAsk('ভাড়ার দাম দেখান')">মূল্য তালিকা</span>
+
+                    <span class="hint-chip" data-lang="en" onclick="quickAsk('What is the total revenue?')">Revenue</span>
+                    <span class="hint-chip" data-lang="bn" style="display:none;" onclick="quickAsk('মোট আয় কত?')">মোট আয়</span>
+
+                    <span class="hint-chip" data-lang="en" onclick="quickAsk('How does ratings work?')">Ratings</span>
+                    <span class="hint-chip" data-lang="bn" style="display:none;" onclick="quickAsk('রেটিং সিস্টেম কীভাবে কাজ করে?')">রেটিং</span>
                 </div>
             </div>
         </div>
 
         <!-- Input area -->
         <div class="chatbot-input-area">
-            <input id="chatbot-input" type="text" placeholder="Ask anything about Rentify..."
+            <input id="chatbot-input" type="text"
+                   placeholder="Ask anything about Rentify..."
+                   data-placeholder-en="Ask anything about Rentify..."
+                   data-placeholder-bn="Rentify সম্পর্কে যেকোনো প্রশ্ন করুন..."
                    onkeydown="if(event.key==='Enter') sendMessage();" />
             <button onclick="sendMessage()" id="chatbot-send-btn" aria-label="Send">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
