@@ -25,3 +25,7 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Puku editor cache and local environment config
+.puku/
+.env
